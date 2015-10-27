@@ -24,6 +24,8 @@ function ScriptServer(args) {
             else obj.method(line);
         }
     });
+    self.spawn.stderr.on('data', d => process.stderr.write(d));
+    self.spawn.on('exit', d => process.exit());
     process.stdin.on('data', d => self.spawn.stdin.write(d));
     process.on('exit', d => self.spawn.kill());
 }
