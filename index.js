@@ -6,12 +6,12 @@ var spawn = require('child_process').spawn;
 function ScriptServer(args) {
     var self = this;
     self.modules = {};
-    
+
     // Spawn minecraft server
     args = args.split(' ');
     if (args[0] === 'java') args.shift();
     self.spawn = spawn('java', args);
-    
+
     // Initialize parse loop
     self.parseLoop = {};
     self.spawn.stdout.on('data', d => {
@@ -20,7 +20,7 @@ function ScriptServer(args) {
         for (var id in self.parseLoop) {
             var obj = self.parseLoop[id];
             if (obj.condition !== undefined && !obj.condition()) continue;
-            if (obj.regexp) obj.method(obj.regexp.exec(line));
+            if (obj.regexp) obj.method(line.match(obj.regexp));
             else obj.method(line);
         }
     });
@@ -34,7 +34,7 @@ function ScriptServer(args) {
 
 ScriptServer.prototype.use = function(packages) {
     var self = this;
-    
+
     if (!Array.isArray(packages)) packages = packages.split(' ');
     packages.forEach(package => {
         if (!self.modules[package]) {
@@ -48,10 +48,10 @@ ScriptServer.prototype.use = function(packages) {
 
 ScriptServer.prototype.send = function(command, responseRegex) {
     var self = this;
-    
+
     return new Promise((resolve, reject) => {
         self.spawn.stdin.write(command + '\n');
-        
+
         if (responseRegex) {
             var id = Date.now();
             self.parseLoop[id] = {
