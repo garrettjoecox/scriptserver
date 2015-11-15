@@ -1,22 +1,26 @@
 
-var spawn = require('child_process').spawn;
-
 /*** The engine of ScriptServer ***/
 
 function ScriptServer(args) {
     var self = this;
     self.modules = {};
+    self.parseLoop = {};
 
-    // Spawn minecraft server
     args = args.split(' ');
     if (args[0] === 'java') args.shift();
-    self.spawn = spawn('java', args);
+    self.args = args;
+}
 
-    // Initialize parse loop
-    self.parseLoop = {};
+/*** Core Methods ***/
+
+ScriptServer.prototype.start = function() {
+    var self = this;
+
+    self.spawn = require('child_process').spawn('java', self.args);
+
     self.spawn.stdout.on('data', d => {
-        process.stdout.write(d);
         var line = d.toString();
+        process.stdout.write(d);
         for (var id in self.parseLoop) {
             var obj = self.parseLoop[id];
             if (obj.condition !== undefined && !obj.condition()) continue;
@@ -25,12 +29,17 @@ function ScriptServer(args) {
         }
     });
     self.spawn.stderr.on('data', d => process.stderr.write(d));
-    self.spawn.on('exit', d => process.exit());
     process.stdin.on('data', d => self.spawn.stdin.write(d));
-    process.on('exit', d => self.spawn.kill());
-}
+    process.on('exit', () => self.spawn.kill());
 
-/*** Core Methods ***/
+    return self;
+};
+
+ScriptServer.prototype.stop = function() {
+    var self = this;
+
+    self.spawn.kill();
+};
 
 ScriptServer.prototype.use = function(packages) {
     var self = this;
