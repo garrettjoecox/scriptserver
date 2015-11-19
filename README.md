@@ -1,7 +1,9 @@
+scriptserver
+============
+
 [![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver)
 
 ## What's ScriptServer?
-
 A Minecraft server wrapper written in Node.js.
 Using the i/o of the server console it allows you to do some pretty cool things.
 Though, this is the engine of ScriptServer, and is honestly pretty bare.
@@ -208,15 +210,15 @@ And muahlah! In game sending the command `~head` will give yourself your player 
 If you run into any issues or questions, read through other published modules(below) or submit an issue and I'll try to help you out!
 
 ## Published Modules
-- ##### scriptserver-basics
+- ##### [scriptserver-basics](https://github.com/garrettjoecox/scriptserver-basics)
 Some essential server commands like home, tpa, and head.
-- ##### scriptserver-command
+- ##### [scriptserver-command](https://github.com/garrettjoecox/scriptserver-command)
 Provides interface for adding custom server commands.
-- ##### scriptserver-event
+- ##### [scriptserver-event](https://github.com/garrettjoecox/scriptserver-event)
 Interface for hooking onto events like chat, login, and logout.
-- ##### scriptserver-helpers
+- ##### [scriptserver-helpers](https://github.com/garrettjoecox/scriptserver-helpers)
 Multiple helper commands for module developers.
-- ##### scriptserver-json
+- ##### [scriptserver-json](https://github.com/garrettjoecox/scriptserver-json)
 Provides ability to read/write from JSON files.
-- ##### scriptserver-portal
+- ##### [scriptserver-portal](https://github.com/garrettjoecox/scriptserver-portal)
 Commands for creating portals with end_gateways
