@@ -10,10 +10,10 @@ Though, this is the engine of ScriptServer, and is honestly pretty bare.
 The modules are where the magic happens (check 'Published Modules' down below).
 
 The ScriptServer engine does 4 things:
- - Starts up the minecraft server & pipes the i/o.
+ - Provides the methods to start and stop the Minecraft server, piping the i/o
  - Sets up a parseLoop object in which each line of output will go through.
  - Initializes the module loader. (`ScriptServer.use`)
- - Configures the input command to send things to the server. (`ScriptServer.send`)
+ - Configures the input command to send messages to the server. (`ScriptServer.send`)
 
 ## What version of Minecraft does it work with?
 
@@ -88,7 +88,7 @@ server.parseLoop.parseMethodId = {
 ### 2) server.send
 
 The send method allows you to send commands to the Minecraft server.
-See [here](http://minecraft.gamepedia.com/Commands) for a list of available commands. When mixed with ES2015's template strings server.send can be a powerful tool.
+See [here](http://minecraft.gamepedia.com/Commands) for a list of available commands. When mixed with ES2015's template strings and Promises, server.send can be a powerful tool.
 
 #### Using server.send
 ```javascript
@@ -147,20 +147,20 @@ server.getLocation('ProxySaw')
 ```
 
 ### Module Structure
-So now that you know how to utilize those tools, time to build a module. Whenever a user `.use`'s your module, it simply calls require on it and hands it the server, therefor encapsulate all server-side logic in a module.exports function (the prototypes can be outside).
+So now that you know how to utilize those tools, it's time to build a module. Whenever a user `.use`'s your module, it simply calls require on it and hands it the server, therefor encapsulate all server-side logic in a module.exports function (the prototypes can be outside).
 
-The following was taken from the scriptserver-command module. Allows for custom commands to be created using server.command() Read inline comments for breakdown.
+The following was taken from the [scriptserver-command module](https://github.com/garrettjoecox/scriptserver-command). It allows for custom commands to be created using server.command() Read inline comments for breakdown.
 ```javascript
 // Pulling in ScriptServer for attaching to prototype
 var ScriptServer = require('scriptserver');
 
-// What is called on server.use('scriptserver-command')
+// The function that is called on server.use('scriptserver-command')
 module.exports = function(server) {
 
     // Initializes commands object.
     server.commands = server.commands || {};
 
-    // Initializes parseCommand parseLoop child.
+    // Initializes the parseLoop child 'parseCommand'.
     server.parseLoop.parseCommand = {
         id: 'parseCommand',
 
@@ -184,15 +184,14 @@ module.exports = function(server) {
 
 // Attaches the .command method to the ScriptServer prototype
 ScriptServer.prototype.command = function(name, callback) {
-    var self = this;
 
     // Pairs the given callback to the command name in the command storage
-    self.commands[name] = callback;
-    return self;
+    this.commands[name] = callback;
+    return this;
 };
 ```
 
-Now for using the command module,
+Now for using the scriptserver-command module,
 ```javascript
 var ScriptServer = require('scriptserver');
 var server = new ScriptServer('-Xmx2048M -jar minecraft_server.15w45a.jar nogui');
@@ -210,15 +209,15 @@ And muahlah! In game sending the command `~head` will give yourself your player 
 If you run into any issues or questions, read through other published modules(below) or submit an issue and I'll try to help you out!
 
 ## Published Modules
-- ##### [scriptserver-basics](https://github.com/garrettjoecox/scriptserver-basics)
+- [scriptserver-basics](https://github.com/garrettjoecox/scriptserver-basics)
 Some essential server commands like home, tpa, and head.
-- ##### [scriptserver-command](https://github.com/garrettjoecox/scriptserver-command)
+- [scriptserver-command](https://github.com/garrettjoecox/scriptserver-command)
 Provides interface for adding custom server commands.
-- ##### [scriptserver-event](https://github.com/garrettjoecox/scriptserver-event)
+- [scriptserver-event](https://github.com/garrettjoecox/scriptserver-event)
 Interface for hooking onto events like chat, login, and logout.
-- ##### [scriptserver-helpers](https://github.com/garrettjoecox/scriptserver-helpers)
+- [scriptserver-helpers](https://github.com/garrettjoecox/scriptserver-helpers)
 Multiple helper commands for module developers.
-- ##### [scriptserver-json](https://github.com/garrettjoecox/scriptserver-json)
+- [scriptserver-json](https://github.com/garrettjoecox/scriptserver-json)
 Provides ability to read/write from JSON files.
-- ##### [scriptserver-portal](https://github.com/garrettjoecox/scriptserver-portal)
+- [scriptserver-portal](https://github.com/garrettjoecox/scriptserver-portal)
 Commands for creating portals with end_gateways
