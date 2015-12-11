@@ -26,11 +26,12 @@ While inside the root of your Minecraft server directory, run `npm install scrip
 ```javascript
 var ScriptServer = require('scriptserver');
 
-// More customization on startup command coming soon...
-var server = new ScriptServer('-Xmx2048M -jar minecraft_server.15w45a.jar nogui');
+var server = new ScriptServer('snapshot', ['-Xmx2048M']);
 
 server.start();
 ```
+
+The first param can either be 'snapshot', 'release', or a specific jar in your local directory. If it is 'snapshot' or 'release' it will download the newest version if possible on startup.
 
 And that's it!
 
