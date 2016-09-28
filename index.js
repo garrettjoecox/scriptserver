@@ -8,6 +8,7 @@ class ScriptServer extends EventsEmitter {
   constructor(jar, args) {
     super();
 
+    this.config = {};
     this.modules = [];
     args.push('-jar', jar, 'nogui');
     this.spawn = spawn('java', args);
