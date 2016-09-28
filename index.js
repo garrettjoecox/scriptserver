@@ -1,145 +1,64 @@
+'use strict';
 
-var path = require('path');
-var pfy = require('pfy');
-var request = require('request');
-var fs = require('fs');
+const EventsEmitter = require('events');
+const spawn = require('child_process').spawn;
 
-/*** The engine of ScriptServer ***/
+class ScriptServer extends EventsEmitter {
 
-function ScriptServer(jar, args) {
-    var self = this;
+  constructor(jar, args) {
+    super();
 
-    self.modules = {};
-    self.parseLoop = {};
-    self.jar = jar;
-    self.args = args;
+    this.modules = [];
+    args.push('-jar', jar, 'nogui');
+    this.spawn = spawn('java', args);
 
-    process.stdin.on('data', d => {
-        if (self.spawn) self.spawn.stdin.write(d);
-        else {
-            var s = d.toString();
-            s = s.slice(0, s.length -1).split(' ');
-            if (s[0] === 'start') {
-                if (s[1] === 'release' || s[1] === 'snapshot') self.jar = s[1];
-                self.start();
+    process.stdin.on('data', d => this.spawn.stdin.write(d));
+    this.spawn.stdout.on('data', d => {
+      process.stdout.write(d);
+      this.emit('console', d.toString());
+    });
+
+    this.spawn.on('exit', process.exit);
+    process.on('exit', this.spawn.kill);
+    process.on('close', this.spawn.kill);
+  }
+
+  use(module) {
+    if (this.modules.filter(m => m === module).length === 0) {
+      this.modules.push(module);
+      module.call(this);
+    }
+  }
+
+  send(command, successRegex, failRegex) {
+    return new Promise((resolve, reject) => {
+      this.spawn.stdin.write(command + '\n');
+
+      if (!successRegex) resolve();
+      else {
+        const temp = function(event) {
+          const success = event.match(successRegex);
+          if (success) {
+            resolve(success);
+            this.removeListener('console', temp);
+          } else if (failRegex) {
+            const fail = event.match(failRegex);
+            if (fail) {
+              reject(fail);
+              this.removeListener('console', temp);
             }
+          }
         }
+        this.on('console', temp);
+        setTimeout(() => {
+          reject(new Error('Timed out'));
+          this.removeListener('console', temp);
+        }, 2000);
+      }
+
     });
-    process.on('exit', () => {
-        if (self.spawn) self.spawn.kill();
-    });
-}
+  }
 
-/*** Core Methods ***/
-
-ScriptServer.prototype.start = function() {
-    var self = this;
-
-    if (self.spawn) return Promise.reject('Server already started.');
-
-    return Promise.resolve()
-        .then(() => (self.jar === 'snapshot' || self.jar === 'release') ? update(self.jar) : self.jar)
-        .then(jar => {
-            var args = self.args.slice(0);
-
-            args.push('-jar', jar, 'nogui');
-            self.spawn = require('child_process').spawn('java', args);
-
-            self.spawn.stdout.on('data', d => {
-                var line = d.toString();
-                process.stdout.write(d);
-                for (var id in self.parseLoop) {
-                    var obj = self.parseLoop[id];
-                    if (obj.condition !== undefined && !obj.condition()) continue;
-                    if (obj.regexp) obj.method(line.match(obj.regexp));
-                    else obj.method(line);
-                }
-            });
-
-            self.spawn.stderr.on('data', d => process.stderr.write(d));
-
-            self.spawn.on('exit', () => {
-                self.spawn = null;
-            });
-
-            return self;
-        });
-};
-
-ScriptServer.prototype.stop = function() {
-    var self = this;
-
-    if (!self.spawn) return Promise.reject('No server running');
-
-    self.spawn.kill();
-    self.spawn = null;
-
-    return Promise.resolve(self);
-};
-
-ScriptServer.prototype.use = function(packages) {
-    var self = this;
-
-    if (!Array.isArray(packages)) packages = packages.split(' ');
-    packages.forEach(package => {
-        if (!self.modules[package]) {
-            self.modules[package] = true;
-            require(package)(self);
-        }
-    });
-
-    return self;
-};
-
-ScriptServer.prototype.send = function(command, responseRegex) {
-    var self = this;
-
-    return new Promise((resolve, reject) => {
-        self.spawn.stdin.write(command + '\n');
-
-        if (responseRegex) {
-            var id = Date.now();
-            self.parseLoop[id] = {
-                id: id,
-                regexp: responseRegex,
-                method: function(response) {
-                    resolve(response);
-                    delete self.parseLoop[id];
-                }
-            };
-        } else resolve();
-    });
-};
-
-function update(jar) {
-    var url = 'http://s3.amazonaws.com/Minecraft.Download/versions/';
-    var newVersion, newJar, newPath, dir = process.cwd();
-
-    return pfy(request)(url + 'versions.json')
-        .then(response => {
-            newVersion = JSON.parse(response.body).latest[jar];
-            newJar = `minecraft_server.${newVersion}.jar`;
-            newPath = path.join(dir, newJar);
-            return pfy(fs.stat)(newPath)
-                .then(() => true)
-                .catch(() => false);
-        })
-        .then(exists => {
-            if (exists) return newJar;
-            else return downloadFile(`${url}${newVersion}/${newJar}`, newPath);
-        })
-        .then(() => newJar);
-}
-
-function downloadFile(url, filePath) {
-    return new Promise((resolve, reject) => {
-        request
-            .get(url)
-            .on('error', err => reject(err))
-            .pipe(fs.createWriteStream(filePath))
-            .on('error', err => reject(err))
-            .on('close', () => resolve());
-    });
 }
 
 module.exports = ScriptServer;

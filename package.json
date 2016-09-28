@@ -1,11 +1,9 @@
 {
   "name": "scriptserver",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "A minecraft server wrapper built in Node",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garrettjoecox/scriptserver.git"
@@ -16,8 +14,5 @@
     "url": "https://github.com/garrettjoecox/scriptserver/issues"
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
-  "dependencies": {
-    "pfy": "^1.0.1",
-    "request": "^2.67.0"
-  }
+  "dependencies": {}
 }
