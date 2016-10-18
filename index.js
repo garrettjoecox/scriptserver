@@ -5,10 +5,10 @@ const spawn = require('child_process').spawn;
 
 class ScriptServer extends EventsEmitter {
 
-  constructor(jar, args) {
+  constructor(jar, args, config = {}) {
     super();
 
-    this.config = {};
+    this.config = config;
     this.modules = [];
     args.push('-jar', jar, 'nogui');
     this.spawn = spawn('java', args);

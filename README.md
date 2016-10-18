@@ -30,10 +30,10 @@ While inside the root of your Minecraft server directory, run `npm install scrip
 ```javascript
 const ScriptServer = require('scriptserver');
 
-const server = new ScriptServer('snapshot.minecraft_server.jar', ['-Xmx2048M']);
+const server = new ScriptServer('snapshot.minecraft_server.jar', ['-Xmx2048M'], {});
 ```
 
-The first param will be a specific jar in your local directory, and the second is a list of java arguments to apply to the server.
+The first param will be a specific jar in your local directory, and the second is a list of java arguments to apply to the server. The third argument is for the configuration of modules, read each modules README to check for configuration options.
 
 Then run the server with node using
 ```bash
