@@ -3,7 +3,7 @@ scriptserver
 
 [![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver)
 
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/gitterHQ/gitter)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/scriptserver/lobby)
 
 ## What's ScriptServer?
 A Minecraft server wrapper written in Node.js.
