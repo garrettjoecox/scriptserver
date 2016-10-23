@@ -5,20 +5,29 @@ const spawn = require('child_process').spawn;
 
 class ScriptServer extends EventsEmitter {
 
-  constructor(jar, args, config = {}) {
+  constructor(config = {}) {
     super();
 
     this.config = config;
     this.modules = [];
+  }
+
+  start(jar, args) {
     args.push('-jar', jar, 'nogui');
     this.spawn = spawn('java', args);
 
     process.stdin.on('data', d => this.spawn.stdin.write(d));
     this.spawn.stdout.on('data', d => this.emit('console', d.toString()));
 
-    this.spawn.on('exit', process.exit);
-    process.on('exit', this.spawn.kill);
-    process.on('close', this.spawn.kill);
+    process.on('exit', () => this.spawn.kill());
+    process.on('close', () => this.spawn.kill());
+  }
+
+  stop() {
+    if (this.spawn) {
+      this.spawn.kill();
+      this.spawn = null;
+    }
   }
 
   use(module) {
