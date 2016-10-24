@@ -19,8 +19,8 @@ class ScriptServer extends EventsEmitter {
     process.stdin.on('data', d => this.spawn.stdin.write(d));
     this.spawn.stdout.on('data', d => this.emit('console', d.toString()));
 
-    process.on('exit', () => this.spawn.kill());
-    process.on('close', () => this.spawn.kill());
+    process.on('exit', () => this.stop());
+    process.on('close', () => this.stop());
   }
 
   stop() {
