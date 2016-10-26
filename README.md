@@ -32,10 +32,14 @@ While inside the root of your Minecraft server directory, run `npm install scrip
 ```javascript
 const ScriptServer = require('scriptserver');
 
-const server = new ScriptServer('snapshot.minecraft_server.jar', ['-Xmx2048M'], {});
+const server = new ScriptServer({ config });
+
+server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
 ```
 
-The first param will be a specific jar in your local directory, and the second is a list of java arguments to apply to the server. The third argument is for the configuration of modules, read each modules README to check for configuration options.
+When initializing your ScriptServer instance all it takes is an optional config object, which is automatically set to `server.config`, and accessible by third party modules. Read each module's README to check for configuration options.
+
+Starting your server with `server.start()` takes the jar file you want to run for the first argument, and an array of Java Params as the second argument.
 
 Then run the server with node using
 ```bash
@@ -54,13 +58,27 @@ To put 3rd party modules to use, you must first of course `npm install` them, th
 
 ```javascript
 const ScriptServer = require('scriptserver');
-const server = new ScriptServer('snapshot.minecraft_server.jar', ['-Xmx2048M']);
+
+// Configuration
+const server = new ScriptServer({
+  command: {
+    prefix: '~'
+  },
+  essentials: {
+    starterKit: {
+      enabled: false
+    }
+  }
+});
 
 // Loading modules
 server.use(require('scriptserver-command'))
 // or
 const ssEssentials = require('scriptserver-essentials');
 server.use(ssEssentials);
+
+// Start server
+server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
 ```
 
 As for the functionality of the actual module please refer to it's own `README.md` for use.
@@ -105,7 +123,7 @@ server.send(`playsound entity.item.pickup master ${player} ~ ~ ~ 10 1 1`);
 server.send(`say ${player} got a diamond!`);
 ```
 
-`server.send` also allows you to pass in a regexp as the second argument, that will parse the next line output from console and hand it off as a promise to the next function, example below (This interface is a WIP, and is buggy if there is a ton of logs)
+`server.send` also allows you to pass in a Regex as the second argument, that will parse the next line output from console and hand it off as a promise to the next function, example below (This interface is a WIP, and is buggy if the log is overloaded)
 
 #### Using server.send promises to get player location
 
@@ -177,14 +195,16 @@ module.exports = function() {
 Now for using the scriptserver-command module,
 ```javascript
 const ScriptServer = require('scriptserver');
-const server = new ScriptServer('snapshot.minecraft_server.jar', ['-Xmx2048M']);
+const server = new ScriptServer();
 
 server.use(require('scriptserver-command'));
 
 server.command('head', event => {
-  var player = event.args[0] || event.player
-  server.send(`give ${event.player} minecraft:skull 1 3 {SkullOwner:"${player}"}`);
+  var skull = event.args[0] || event.player
+  server.send(`give ${event.player} minecraft:skull 1 3 {SkullOwner:"${skull}"}`);
 });
+
+server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
 ```
 
 And muahlah! In game sending the command `~head` will give yourself your player head or passing in a name `~head Notch` will give you their player head!
@@ -202,3 +222,5 @@ Interface for hooking onto events like chat, login, and logout.
 Multiple helper commands for module developers.
 - [scriptserver-json](https://github.com/garrettjoecox/scriptserver-json)
 Provides ability to read/write from JSON files.
+- [scriptserver-update](https://github.com/garrettjoecox/scriptserver-update)
+Lets you restart the server in game, and auto update to snapshot/release channels.

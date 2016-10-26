@@ -16,8 +16,15 @@ class ScriptServer extends EventsEmitter {
     args.push('-jar', jar, 'nogui');
     this.spawn = spawn('java', args);
 
-    process.stdin.on('data', d => this.spawn.stdin.write(d));
-    this.spawn.stdout.on('data', d => this.emit('console', d.toString()));
+    process.stdin.on('data', d => {
+      if (this.spawn) this.spawn.stdin.write(d);
+    });
+
+    this.spawn.stdout.on('data', d => {
+      d.toString().split('\n').forEach(l => {
+        if (l) this.emit('console', l);
+      });
+    });
 
     process.on('exit', () => this.stop());
     process.on('close', () => this.stop());
@@ -39,6 +46,8 @@ class ScriptServer extends EventsEmitter {
 
   send(command, successRegex, failRegex) {
     return new Promise((resolve, reject) => {
+      if (!this.spawn) return reject(new Error('Server not started'));
+
       this.spawn.stdin.write(command + '\n');
 
       if (!successRegex) resolve();

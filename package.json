@@ -1,6 +1,6 @@
 {
   "name": "scriptserver",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A minecraft server wrapper built in Node",
   "main": "index.js",
   "scripts": {},
