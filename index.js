@@ -14,7 +14,9 @@ class ScriptServer extends EventsEmitter {
 
   start(jar, args) {
     args.push('-jar', jar, 'nogui');
-    this.spawn = spawn('java', args, this.config.serverprocess || {});
+    let tmp = this.config.serverprocess || {};
+    console.log(tmp);
+    this.spawn = spawn('java', args, tmp);
 
     process.stdin.on('data', d => this.spawn.stdin.write(d));
     this.spawn.stdout.on('data', d => this.emit('console', d.toString()));
