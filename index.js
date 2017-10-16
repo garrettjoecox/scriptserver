@@ -1,33 +1,59 @@
-'use strict';
 
 const EventsEmitter = require('events');
-const spawn = require('child_process').spawn;
+const { spawn } = require('child_process');
+const defaultsDeep = require('lodash.defaultsdeep');
+const Rcon = require('./Rcon');
+
+const defaultConfig = {
+  core: {
+    jar: 'minecraft_server.jar',
+    args: ['-Xmx2G'],
+    pipeIO: true,
+    spawnOpts: {},
+    rcon: {
+      port: '25575',
+      password: '0000',
+      buffer: 50,
+    },
+  },
+};
 
 class ScriptServer extends EventsEmitter {
-
   constructor(config = {}) {
     super();
-
-    this.config = config;
+    this.config = defaultsDeep({}, config, defaultConfig);
     this.modules = [];
-  }
 
-  start(jar, args) {
-    args.push('-jar', jar, 'nogui');
-    this.spawn = spawn('java', args);
-
-    process.stdin.on('data', d => {
-      if (this.spawn) this.spawn.stdin.write(d);
+    // RCON
+    this.rcon = new Rcon(this.config.core.rcon);
+    this.on('console', (l) => {
+      if (l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
     });
 
-    this.spawn.stdout.on('data', d => {
-      d.toString().split('\n').forEach(l => {
+    // Pipe
+    process.stdin.on('data', (d) => {
+      if (this.config.core.pipeIO && this.spawn) this.spawn.stdin.write(d);
+    });
+    process.on('exit', () => this.stop());
+    process.on('close', () => this.stop());
+  }
+
+  start() {
+    if (this.spawn) throw new Error('Server already started');
+
+    const args = this.config.core.args.concat('-jar', this.config.core.jar, 'nogui');
+    this.spawn = spawn('java', args, this.config.spawnOpts);
+
+    this.spawn.stdout.on('data', (d) => {
+      // Pipe
+      if (this.config.core.pipeIO) process.stdout.write(d);
+      // Emit console
+      d.toString().split('\n').forEach((l) => {
         if (l) this.emit('console', l);
       });
     });
 
-    process.on('exit', () => this.stop());
-    process.on('close', () => this.stop());
+    return this;
   }
 
   stop() {
@@ -35,46 +61,26 @@ class ScriptServer extends EventsEmitter {
       this.spawn.kill();
       this.spawn = null;
     }
+
+    return this;
   }
 
   use(module) {
+    if (typeof module !== 'function') throw new Error('A module must be a function');
+
     if (this.modules.filter(m => m === module).length === 0) {
       this.modules.push(module);
       module.call(this);
     }
+
+    return this;
   }
 
-  send(command, successRegex, failRegex) {
-    return new Promise((resolve, reject) => {
-      if (!this.spawn) return reject(new Error('Server not started'));
-
-      this.spawn.stdin.write(command + '\n');
-
-      if (!successRegex) resolve();
-      else {
-        const temp = function(event) {
-          const success = event.match(successRegex);
-          if (success) {
-            resolve(success);
-            this.removeListener('console', temp);
-          } else if (failRegex) {
-            const fail = event.match(failRegex);
-            if (fail) {
-              reject(fail);
-              this.removeListener('console', temp);
-            }
-          }
-        }
-        this.on('console', temp);
-        setTimeout(() => {
-          reject(new Error('Timed out'));
-          this.removeListener('console', temp);
-        }, 2000);
-      }
-
+  send(command) {
+    return new Promise((resolve) => {
+      this.rcon.exec(command, result => resolve(result));
     });
   }
-
 }
 
 module.exports = ScriptServer;

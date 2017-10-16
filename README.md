@@ -6,24 +6,24 @@ scriptserver
 [![Gitter chat](https://img.shields.io/gitter/room/ScriptServer/Lobby.svg)](https://gitter.im/ScriptServer/Lobby) ![Total Downloads](https://img.shields.io/npm/dt/scriptserver.svg)
 
 ## What's ScriptServer?
-A Minecraft server wrapper written in Node.js.
-Using the i/o of the server console it allows you to do some pretty cool things.
+A configurable Minecraft server wrapper written in Node.js.
+Using a combination of RCON and the output of the server console it allows you to do some pretty cool things.
 Though, this is the engine of ScriptServer, and is honestly pretty bare.
 The modules are where the magic happens (check 'Published Modules' down below).
 
 The ScriptServer engine does 3 things:
- - Starts the minecraft server as a child process, using the specified jar & args
- - Provides the interface to the I/O of the server
+ - Starts the Minecraft server as a child process, using the specified jar & arguments
+ - Provides an interface to send commands, use their results, and make use of other things that are displayed in the server console.
  - Initializes a simple module loader for ScriptServer modules.
 
 ## What version of Minecraft does it work with?
 
-I haven't yet tested how far back it can go, but because it's solely based on the output logs it works with pretty much any recent/future versions, including snapshots. (As long as the logging format doesn't drastically change)
+Because it relies on the RCON interface and the format of the output log, it should work with pretty much any version of Minecraft dating back to 2012. It should continue to work for all future releases and snapshots as long as the logging format doesn't drastically change, and they don't drop RCON support. (Both unlikely)
 
 ## Getting Started
 
 #### Prerequisites
-- [NodeJS](https://nodejs.org/en/) (v6.7.0 recommended)
+- [NodeJS](https://nodejs.org/en/) (^8.0.0 recommended)
 - Somewhat of a familiarity with NodeJS is recommended.
 
 #### Setup
@@ -32,16 +32,23 @@ While inside the root of your Minecraft server directory, run `npm install scrip
 ```javascript
 const ScriptServer = require('scriptserver');
 
-const server = new ScriptServer({ config });
+const server = new ScriptServer({
+  core: {
+    jar: 'minecraft_server.jar',
+    args: ['-Xmx2G']
+  }
+});
 
-server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
+server.start();
 ```
 
 When initializing your ScriptServer instance all it takes is an optional config object, which is automatically set to `server.config`, and accessible by third party modules. Read each module's README to check for configuration options.
 
-Starting your server with `server.start()` takes the jar file you want to run for the first argument, and an array of Java Params as the second argument.
+The options in the `core` config are used by the ScriptServer engine to determine the startup jar and arguments.
 
-Then run the server with node using
+You start your server with `server.start()`
+
+Finally, you can run the server with node using
 ```bash
 node server.js
 ```
@@ -60,7 +67,12 @@ To put 3rd party modules to use, you must first of course `npm install` them, th
 const ScriptServer = require('scriptserver');
 
 // Configuration
+
 const server = new ScriptServer({
+  core: {
+    jar: 'minecraft_server.jar',
+    args: ['-Xmx2G']
+  },
   command: {
     prefix: '~'
   },
@@ -72,13 +84,15 @@ const server = new ScriptServer({
 });
 
 // Loading modules
+
 server.use(require('scriptserver-command'))
 // or
 const ssEssentials = require('scriptserver-essentials');
 server.use(ssEssentials);
 
 // Start server
-server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
+
+server.start();
 ```
 
 As for the functionality of the actual module please refer to it's own `README.md` for use.
@@ -94,9 +108,10 @@ Every time a log is output the engine emits the `console` event. This sounds use
 
 Because ScriptServer extends the EventsEmitter, 3rd party module creators can utilize the emitter themselves. For instance the `scriptserver-event` module emits the events `chat`, `login`, `logout`, etc. right along side the main `console` event.
 
-#### Simple command example
+#### Simple ~head command example
 ```javascript
 server.on('console', line => {
+    // Regex matches when a user types ~head in chat
     const result = line.match(/]: <([\w]+)> ~head (.*)/);
     if (result) {
         // Player that sent command
@@ -123,7 +138,7 @@ server.send(`playsound entity.item.pickup master ${player} ~ ~ ~ 10 1 1`);
 server.send(`say ${player} got a diamond!`);
 ```
 
-`server.send` also allows you to pass in a Regex as the second argument, that will parse the next line output from console and hand it off as a promise to the next function, example below (This interface is a WIP, and is buggy if the log is overloaded)
+`server.send` also allows you to use the result of the command through it's returned promise. Similar to the console output, when combined with RegExp this can be extremely useful.
 
 #### Using server.send promises to get player location
 
@@ -136,16 +151,17 @@ Will result in the following line being output:
 [10:32:37] [Server thread/INFO]: The block at 20,74,-161 had the data value of 0 (expected: 10).
 ```
 
-Using the RegExp: `/at\s([-\d]+),([-\d]+),([-\d]+)/` I can pull the coordinates out of that log and hand them off to the next promise function.
+Using the RegExp: `/at\s([-\d]+),([-\d]+),([-\d]+)/` I can pull the coordinates out of that log and use them within my javascript function.
 
 ```javascript
 var player = 'ProxySaw';
 
-server.send(`execute ${player} ~ ~ ~ /testforblock ~ ~ ~ minecraft:air 10`, /at\s([-\d]+),([-\d]+),([-\d]+)/)
-  .then(ouputCoords => {
-    console.log('X:', ouputCoords[0]);
-    console.log('Y:', ouputCoords[1]);
-    console.log('Z:', ouputCoords[2]);
+server.send(`execute ${player} ~ ~ ~ /testforblock ~ ~ ~ minecraft:air 10`)
+  .then(result => {
+    const coords = result.match(/at\s([-\d]+),([-\d]+),([-\d]+)/);
+    console.log('X:', coords[0]);
+    console.log('Y:', coords[1]);
+    console.log('Z:', coords[2]);
   });
 ```
 
@@ -182,7 +198,7 @@ module.exports = function() {
       });
     }
   });
-  
+
   // Invokes any listeners on the command the player triggered
   server.on('command', event => {
     if (commands.hasOwnProperty(event.command)) {
@@ -195,7 +211,12 @@ module.exports = function() {
 Now for using the scriptserver-command module,
 ```javascript
 const ScriptServer = require('scriptserver');
-const server = new ScriptServer();
+const server = new ScriptServer({
+  core: {
+    jar: 'minecraft_server.jar',
+    args: ['-Xmx2G']
+  },
+});
 
 server.use(require('scriptserver-command'));
 
@@ -204,7 +225,7 @@ server.command('head', event => {
   server.send(`give ${event.player} minecraft:skull 1 3 {SkullOwner:"${skull}"}`);
 });
 
-server.start('minecraft_server.your_jar.jar', ['-Xmx2048M']);
+server.start();
 ```
 
 And muahlah! In game sending the command `~head` will give yourself your player head or passing in a name `~head Notch` will give you their player head!
