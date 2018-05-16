@@ -42,7 +42,7 @@ class ScriptServer extends EventsEmitter {
     if (this.spawn) throw new Error('Server already started');
 
     const args = this.config.core.args.concat('-jar', this.config.core.jar, 'nogui');
-    this.spawn = spawn('java', args, this.config.spawnOpts);
+    this.spawn = spawn('java', args, this.config.core.spawnOpts);
 
     this.spawn.stdout.on('data', (d) => {
       // Pipe

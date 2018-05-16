@@ -35,7 +35,11 @@ const ScriptServer = require('scriptserver');
 const server = new ScriptServer({
   core: {
     jar: 'minecraft_server.jar',
-    args: ['-Xmx2G']
+    args: ['-Xmx2G'],
+    rcon: {
+      port: '25575',
+      password: 'password'
+    }
   }
 });
 
@@ -44,7 +48,14 @@ server.start();
 
 When initializing your ScriptServer instance all it takes is an optional config object, which is automatically set to `server.config`, and accessible by third party modules. Read each module's README to check for configuration options.
 
-The options in the `core` config are used by the ScriptServer engine to determine the startup jar and arguments.
+The options in the `core` config are used by the ScriptServer engine to determine the startup jar, arguments, and RCON configuration.
+
+**RCON IS NOT ENABLED BY DEFAULT**, you will need to add the following to your `server.properties` to enable it:
+```
+enable-rcon=true
+rcon.port=25575
+rcon.password=password
+```
 
 You start your server with `server.start()`
 
