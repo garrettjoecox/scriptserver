@@ -30,10 +30,6 @@ class ScriptServer extends EventsEmitter {
       if (l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
     });
 
-    // Pipe
-    process.stdin.on('data', (d) => {
-      if (this.config.core.pipeIO && this.spawn) this.spawn.stdin.write(d);
-    });
     process.on('exit', () => this.stop());
     process.on('close', () => this.stop());
   }
@@ -44,9 +40,12 @@ class ScriptServer extends EventsEmitter {
     const args = this.config.core.args.concat('-jar', this.config.core.jar, 'nogui');
     this.spawn = spawn('java', args, this.config.core.spawnOpts);
 
+    if (this.config.core.pipeIO) {
+      this.spawn.stdout.pipe(process.stdout);
+      process.stdin.pipe(this.spawn.stdin);
+    }
+
     this.spawn.stdout.on('data', (d) => {
-      // Pipe
-      if (this.config.core.pipeIO) process.stdout.write(d);
       // Emit console
       d.toString().split('\n').forEach((l) => {
         if (l) this.emit('console', l);
