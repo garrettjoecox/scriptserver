@@ -13,7 +13,7 @@ class Rcon {
     this.queue = [];
 
     this.rcon = new SimpleRcon({
-      host: 'localhost',
+      host: this.config.host,
       port: this.config.port,
       password: this.config.password,
       timeout: 0,

@@ -13,6 +13,7 @@ const defaultConfig = {
       stdio: ['pipe', 'pipe', 'inherit'],
     },
     rcon: {
+      host: 'localhost',
       port: '25575',
       password: '0000',
       buffer: 50,
