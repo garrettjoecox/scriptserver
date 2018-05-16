@@ -9,7 +9,9 @@ const defaultConfig = {
     jar: 'minecraft_server.jar',
     args: ['-Xmx2G'],
     pipeIO: true,
-    spawnOpts: {},
+    spawnOpts: {
+      stdio: ['pipe', 'pipe', 'inherit'],
+    },
     rcon: {
       port: '25575',
       password: '0000',
