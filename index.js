@@ -18,6 +18,18 @@ const defaultConfig = {
       password: '0000',
       buffer: 50,
     },
+    api: 'vanilla',
+    regex: {
+      vanilla: {
+        rcon_listening: /\[RCON Listener #1\/INFO\]: RCON running/i
+      },
+      spigot: {
+        rcon_listening: /\ INFO]: RCON running on/i
+      },
+      bukkit: {
+        rcon_listening: /\ INFO]: RCON running on/i
+      }
+    }
   },
 };
 
@@ -25,12 +37,13 @@ class ScriptServer extends EventsEmitter {
   constructor(config = {}) {
     super();
     this.config = defaultsDeep({}, config, defaultConfig);
+    this.api = this.config.core.api;
     this.modules = [];
 
     // RCON
     this.rcon = new Rcon(this.config.core.rcon);
     this.on('console', (l) => {
-      if (l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
+      if (l.match(this.config.core.regex[this.api].rcon_listening)) this.rcon.connect();
     });
 
     process.on('exit', () => this.stop());
