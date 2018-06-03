@@ -110,7 +110,7 @@ As for the functionality of the actual module please refer to it's own `README.m
 
 ## Creating Modules
 
-As a developer you have two main tools to work with. Below I will explain and use them in examples.
+As a developer you have a few tools to work with. Below I will explain and use them in examples.
 
 ### 1) server.on(event, callback)
 
@@ -135,7 +135,7 @@ server.on('console', line => {
 });
 ```
 
-### 2) server.send
+### 2) server.send(command)
 
 The send method allows you to send commands to the Minecraft server.
 See [here](http://minecraft.gamepedia.com/Commands) for a list of available commands. When mixed with ES2015's template strings and Promises, server.send can be a powerful tool.
@@ -175,6 +175,10 @@ server.send(`execute ${player} ~ ~ ~ /testforblock ~ ~ ~ minecraft:air 10`)
     console.log('Z:', coords[2]);
   });
 ```
+
+### 3) server.sendConsole(command)
+
+sendConsole is a helper method for special use-cases that want/need to bypass the RCON interface, and instead write directly to the server console. The drawback of this, is that there is no direct response to anything sent directly to the console. About 99% of the time you'll likely want to use `server.send` instead.
 
 ### Module Structure
 So now that you know how to utilize those tools, it's time to build a module. Whenever a user `.use`'s your module, it simply invokes it with the context of their server, therefor encapsulate all server-side logic in a module.exports function.
