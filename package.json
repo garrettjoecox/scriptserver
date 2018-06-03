@@ -1,6 +1,6 @@
 {
   "name": "scriptserver",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A minecraft server wrapper built in Node",
   "main": "index.js",
   "repository": {
@@ -15,7 +15,7 @@
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
     "lodash.defaultsdeep": "^4.6.0",
-    "simple-rcon": "^0.3.1"
+    "simple-rcon": "github:garrettjoecox/simple-rcon"
   },
   "devDependencies": {
     "eslint": "^4.9.0",
