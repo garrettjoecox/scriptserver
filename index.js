@@ -30,7 +30,7 @@ class ScriptServer extends EventsEmitter {
     // RCON
     this.rcon = new Rcon(this.config.core.rcon);
     this.on('console', (l) => {
-      if (l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
+      if (this.rcon.state !== 'connected' && l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
     });
 
     process.on('exit', () => this.stop());
@@ -60,6 +60,8 @@ class ScriptServer extends EventsEmitter {
 
   stop() {
     if (this.spawn) {
+      this.rcon.disconnect();
+
       this.spawn.kill();
       this.spawn = null;
     }

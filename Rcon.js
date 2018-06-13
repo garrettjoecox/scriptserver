@@ -33,6 +33,10 @@ class Rcon {
     this.rcon.connect();
   }
 
+  disconnect() {
+    this.rcon.close();
+  }
+
   tick() {
     if (this.state === states.CONNECTED && this.queue.length > 0) {
       const item = this.queue.shift();
