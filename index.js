@@ -2,9 +2,11 @@
 const EventsEmitter = require('events');
 const { spawn } = require('child_process');
 const defaultsDeep = require('lodash.defaultsdeep');
+const get = require('lodash.get');
 const Rcon = require('./Rcon');
 
 const defaultConfig = {
+  flavor: 'vanilla',
   core: {
     jar: 'minecraft_server.jar',
     args: ['-Xmx2G'],
@@ -18,6 +20,20 @@ const defaultConfig = {
       password: '0000',
       buffer: 50,
     },
+    flavorSpecific: {
+      default: {
+        rconRunning: /^\[[\d:]{8}\] \[RCON Listener #1\/INFO\]: RCON running/i,
+      },
+      spigot: {
+        rconRunning: /^\[[\d:]{8} INFO\]: RCON running/i,
+      },
+      sponge: {
+        rconRunning: /^\[[\d:]{8} INFO\]: RCON running/i,
+      },
+      glowstone: {
+        rconRunning: /^[\d:]{8} \[INFO\] Successfully bound rcon/i,
+      },
+    },
   },
 };
 
@@ -30,7 +46,10 @@ class ScriptServer extends EventsEmitter {
     // RCON
     this.rcon = new Rcon(this.config.core.rcon);
     this.on('console', (l) => {
-      if (this.rcon.state !== 'connected' && l.match(/\[RCON Listener #1\/INFO\]: RCON running/i)) this.rcon.connect();
+      if (this.rcon.state !== 'connected') {
+        const rconRunning = get(this.config.core, `flavorSpecific.${this.config.flavor}.rconRunning`, this.config.core.flavorSpecific.default.rconRunning);
+        if (l.match(rconRunning)) this.rcon.connect();
+      }
     });
 
     process.on('exit', () => this.stop());
@@ -51,7 +70,7 @@ class ScriptServer extends EventsEmitter {
     this.spawn.stdout.on('data', (d) => {
       // Emit console
       d.toString().split('\n').forEach((l) => {
-        if (l) this.emit('console', l);
+        if (l) this.emit('console', l.trim());
       });
     });
 
