@@ -97,6 +97,14 @@ class ScriptServer extends EventsEmitter {
       this.rcon.exec(command, result => resolve(result));
     });
   }
+
+  sendRaw( command ) {
+
+    return new Promise( ( resolve ) => {
+      this.spawn.stdin.write( `${command}\n` );
+    } );
+
+  }
 }
 
 module.exports = ScriptServer;
