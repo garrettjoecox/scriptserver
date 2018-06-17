@@ -8,7 +8,7 @@ const defaultConfig = {
   core: {
     jar: 'minecraft_server.jar',
     args: ['-Xmx2G'],
-    pipeIO: true,
+    pipeIO: false,
     spawnOpts: {
       stdio: ['pipe', 'pipe', 'inherit'],
     },
@@ -16,21 +16,22 @@ const defaultConfig = {
       host: 'localhost',
       port: '25575',
       password: '0000',
-      buffer: 50,
+      buffer: 25,
     },
-    api: 'vanilla',
+    api: 'spigot',
     regex: {
       vanilla: {
         rcon_listening: /\[RCON Listener #1\/INFO\]: RCON running/i
       },
       spigot: {
-        rcon_listening: /\ INFO]: RCON running on/i
+        rcon_listening: /\ INFO]: RCON running on/i,
+        server_stopped: /\ INFO]: Stopping server/i
       },
       bukkit: {
         rcon_listening: /\ INFO]: RCON running on/i
       }
     }
-  },
+  }
 };
 
 class ScriptServer extends EventsEmitter {
