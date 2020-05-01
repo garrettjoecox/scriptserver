@@ -18,20 +18,11 @@ const defaultConfig = {
       host: 'localhost',
       port: '25575',
       password: '0000',
-      buffer: 50,
+      buffer: 100,
     },
     flavorSpecific: {
       default: {
         rconRunning: /^\[[\d:]{8}\] \[RCON Listener #1\/INFO\]: RCON running/i,
-      },
-      spigot: {
-        rconRunning: /^\[[\d:]{8} INFO\]: RCON running/i,
-      },
-      sponge: {
-        rconRunning: /^\[[\d:]{8} INFO\]: RCON running/i,
-      },
-      glowstone: {
-        rconRunning: /^[\d:]{8} \[INFO\] Successfully bound rcon/i,
       },
     },
   },
