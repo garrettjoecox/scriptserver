@@ -70,7 +70,10 @@ class ScriptServer extends EventsEmitter {
 
   stop() {
     if (this.spawn) {
-      this.rcon.exec('stop', result => {this.rcon.disconnect(); return result});
+      this.rcon.exec('stop', result => {
+        this.rcon.disconnect();
+        this.spawn = null;
+        return result});
     }
 
     return this;
