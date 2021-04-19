@@ -1,0 +1,29 @@
+{
+  "name": "@scriptserver/command",
+  "version": "2.0.0",
+  "description": "A minecraft server wrapper built in Node",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/garrettjoecox/scriptserver.git"
+  },
+  "author": "Garrett Cox <garrettjcox@gmail.com> (http://garrettcox.io)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/garrettjoecox/scriptserver/issues"
+  },
+  "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
+  "dependencies": {
+    "lodash.defaultsdeep": "^4.6.1"
+  },
+  "devDependencies": {
+    "@scriptserver/core": "^2.0.0",
+    "@scriptserver/event": "^2.0.0",
+    "@types/lodash.defaultsdeep": "^4.6.6",
+    "@types/node": "^14.14.41",
+    "typescript": "^4.2.4"
+  }
+}
