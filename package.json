@@ -14,6 +14,12 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-prettier": "^8.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "lerna": "^4.0.0",
+    "prettier": "^2.2.1"
   }
 }
