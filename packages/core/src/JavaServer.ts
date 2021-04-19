@@ -8,6 +8,10 @@ export interface JavaServerConfig {
   path: string;
   pipeStdout: boolean;
   pipeStdin: boolean;
+  flavorSpecific: {
+    startedRegExp: RegExp;
+    stoppedRegExp: RegExp;
+  };
 }
 
 export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
@@ -16,7 +20,23 @@ export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
   path: './server',
   pipeStdout: false,
   pipeStdin: true,
+  flavorSpecific: {
+    startedRegExp: /^Thread RCON Listener started$/,
+    stoppedRegExp: /^Thread RCON Listener stopped$/,
+  },
 };
+
+interface JavaServerEvents {
+  console: (message: string) => void;
+  started: () => void;
+  stopped: () => void;
+}
+
+export declare interface JavaServer {
+  on<U extends keyof JavaServerEvents>(event: U, listener: JavaServerEvents[U]): this;
+
+  emit<U extends keyof JavaServerEvents>(event: U, ...args: Parameters<JavaServerEvents[U]>): boolean;
+}
 
 export class JavaServer extends EventsEmitter {
   private config: JavaServerConfig = DEFAULT_JAVA_SERVER_CONFIG;
@@ -26,6 +46,11 @@ export class JavaServer extends EventsEmitter {
     super();
 
     Object.assign(this.config, config);
+
+    this.on('console', (message: string) => {
+      if (message.match(this.config.flavorSpecific.startedRegExp)) this.emit('started');
+      if (message.match(this.config.flavorSpecific.stoppedRegExp)) this.emit('stopped');
+    });
   }
 
   public start() {
@@ -33,7 +58,6 @@ export class JavaServer extends EventsEmitter {
       throw new Error('JavaServer already running');
     }
 
-    this.emit('starting');
     this.process = spawn('java', [...this.config.args, '-jar', this.config.jar, 'nogui'], {
       cwd: this.config.path,
       stdio: ['pipe', 'pipe', 'pipe'],

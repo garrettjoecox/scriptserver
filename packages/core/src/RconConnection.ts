@@ -15,6 +15,17 @@ export const DEFAULT_RCON_CONNECTION_CONFIG: RconConnectionConfig = {
   buffer: 100,
 };
 
+interface RconConnectionEvents {
+  connected: () => void;
+  disconnected: () => void;
+}
+
+export declare interface RconConnection {
+  on<U extends keyof RconConnectionEvents>(event: U, listener: RconConnectionEvents[U]): this;
+
+  emit<U extends keyof RconConnectionEvents>(event: U, ...args: Parameters<RconConnectionEvents[U]>): boolean;
+}
+
 export class RconConnection extends EventsEmitter {
   private config: RconConnectionConfig = DEFAULT_RCON_CONNECTION_CONFIG;
   private connection?: Socket;
@@ -30,8 +41,7 @@ export class RconConnection extends EventsEmitter {
     this.tick();
   }
 
-  public connect() {
-    this.emit('connecting');
+  public connect(retry = true) {
     this.connection = Net.connect(
       {
         host: this.config.host,
@@ -42,10 +52,17 @@ export class RconConnection extends EventsEmitter {
         this.connection?.write(encode(RequestPacketType.Auth, RequestPacketId.Auth, this.config.password));
       },
     );
+    this.connection.on('error', error => {
+      if (retry && (error as any).code === 'ECONNREFUSED') {
+        console.log('Unable to connect, retrying...');
+        setTimeout(() => this.connect(retry), 1000);
+      } else {
+        console.error(error.message);
+      }
+    });
   }
 
   public disconnect() {
-    this.emit('disconnecting');
     this.connection?.destroy();
     this.connection = undefined;
     this.authenticated = false;

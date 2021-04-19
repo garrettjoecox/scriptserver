@@ -1,18 +1,13 @@
 const { JavaServer, RconConnection } = require('./packages/core');
 
 const server = new JavaServer();
+const rconConnection = new RconConnection();
 
 server.on('console', console.log);
+server.on('started', () => rconConnection.connect());
 
 server.start();
 
-// const rconConnection = new RconConnection();
-
-// rconConnection.connect();
-
-// rconConnection.on('connected', async () => {
-//   console.log('test');
-//   console.log(await rconConnection.send('help'));
-
-//   rconConnection.disconnect();
-// });
+rconConnection.on('connected', async () => {
+  console.log(await rconConnection.send('help'));
+});
