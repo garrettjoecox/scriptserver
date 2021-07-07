@@ -1,4 +1,4 @@
-import { ScriptServer } from '@scriptserver/core';
+import { ScriptServer, ScriptServerEvents, ScriptServerConfig, ScriptServerExt } from '@scriptserver/core';
 import defaultsDeep from 'lodash.defaultsdeep';
 
 export interface CommandConfig {
@@ -22,7 +22,7 @@ declare module '@scriptserver/core' {
     command: CommandConfig;
   }
 
-  export interface ScriptServer {
+  export interface ScriptServerExt {
     command(command: string, callback: EventHandler): void;
   }
 }
@@ -39,7 +39,7 @@ export default (server: ScriptServer) => {
     [commandName: string]: EventHandler[];
   } = {};
 
-  server.command = (command, callback) => {
+  server.ext.command = (command, callback) => {
     command = command.toLowerCase();
     commands[command] = commands[command] || [];
     commands[command].push(callback);

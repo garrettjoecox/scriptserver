@@ -2,8 +2,5 @@
   "editor.tabSize": 2,
   "editor.formatOnPaste": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": true
-  },
   "editor.formatOnSave": true
 }

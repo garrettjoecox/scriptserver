@@ -8,11 +8,6 @@ export interface ScriptServerEvents {
   stopped: () => void;
 }
 
-export declare interface ScriptServer {
-  on<U extends keyof ScriptServerEvents>(event: U, listener: ScriptServerEvents[U]): this;
-  emit<U extends keyof ScriptServerEvents>(event: U, ...args: Parameters<ScriptServerEvents[U]>): boolean;
-}
-
 export interface ScriptServerConfig {
   core: {
     javaServer: JavaServerConfig;
@@ -27,10 +22,18 @@ export const DEFAULT_SCRIPT_SERVER_CONFIG: ScriptServerConfig = {
   },
 };
 
+export interface ScriptServerExt {}
+
+export interface ScriptServer {
+  on<U extends keyof ScriptServerEvents>(event: U, listener: ScriptServerEvents[U]): this;
+  emit<U extends keyof ScriptServerEvents>(event: U, ...args: Parameters<ScriptServerEvents[U]>): boolean;
+}
+
 export class ScriptServer extends EventsEmitter {
   public config: ScriptServerConfig = DEFAULT_SCRIPT_SERVER_CONFIG;
   private javaServer: JavaServer;
   private rconConnection: RconConnection;
+  public ext: ScriptServerExt = {};
 
   constructor(config: Partial<ScriptServerConfig> = {}) {
     super();
@@ -49,5 +52,13 @@ export class ScriptServer extends EventsEmitter {
     this.javaServer.once('started', () => {
       this.rconConnection.connect();
     });
+  }
+
+  public send(message: string): Promise<string> {
+    return this.rconConnection.send(message);
+  }
+
+  public sendConsole(message: string) {
+    return this.javaServer.send(message);
   }
 }
