@@ -1,6 +1,7 @@
 import { Config } from "./config.ts";
 import { JavaServer, JavaServerEvents } from "./java_server.ts";
 import get from "https://deno.land/x/denodash@v0.1.3/src/object/get.ts";
+import { defaultsDeep } from "./defaults_deep.ts";
 
 export interface EventsConfig {
   initialized: boolean;
@@ -139,8 +140,7 @@ export function useEvents(javaServer: JavaServer) {
     return;
   }
 
-  // @ts-ignore
-  javaServer.config = { events: DEFAULT_CONFIG, ...javaServer.config };
+  defaultsDeep(javaServer.config, { events: DEFAULT_CONFIG });
   javaServer.config.events.initialized = true;
 
   javaServer.on("console", (consoleLine) => {

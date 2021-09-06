@@ -2,6 +2,7 @@ import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
 import { iter } from "https://deno.land/std@0.93.0/io/util.ts";
 import { Config } from "./config.ts";
 import { Buffer } from "https://deno.land/std@0.93.0/node/buffer.ts";
+import { defaultsDeep, DeepPartial } from "./defaults_deep.ts";
 
 export interface JavaServerConfig {
   jar: string;
@@ -46,9 +47,11 @@ export class JavaServer extends EventEmitter {
   public config: Config;
   private process?: Deno.Process;
 
-  constructor(config: Partial<Config> = {}) {
+  constructor(config: DeepPartial<Config> = {}) {
     super();
-    this.config = { javaServer: DEFAULT_CONFIG, ...config } as Config;
+    this.config = defaultsDeep(config, {
+      javaServer: DEFAULT_CONFIG,
+    }) as Config;
 
     this.stdinIter();
   }

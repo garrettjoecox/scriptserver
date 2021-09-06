@@ -1,6 +1,7 @@
 import { Config } from "./config.ts";
 import { RconConnection } from "./rcon_connection.ts";
 import get from "https://deno.land/x/denodash@v0.1.3/src/object/get.ts";
+import { defaultsDeep } from "./defaults_deep.ts";
 
 export type Dimension =
   | "minecraft:overworld"
@@ -52,8 +53,7 @@ export function useUtils(rconConnection: RconConnection) {
     return;
   }
 
-  rconConnection.config = {
-    // @ts-ignore
+  defaultsDeep(rconConnection.config, {
     utils: {
       initialized: false,
       flavorSpecific: {
@@ -99,6 +99,7 @@ export function useUtils(rconConnection: RconConnection) {
               x: parseFloat(location![1]),
               y: parseFloat(location![2]),
               z: parseFloat(location![3]),
+              dimension: await this.getDimension(player),
             };
           },
           async teleport(target, location) {
@@ -114,9 +115,9 @@ export function useUtils(rconConnection: RconConnection) {
           },
         },
       },
-    },
-    ...rconConnection.config,
-  };
+    } as UtilsConfig,
+  });
+
   rconConnection.config.utils.initialized = true;
 
   rconConnection.utils = get(

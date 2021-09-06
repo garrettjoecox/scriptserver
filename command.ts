@@ -2,6 +2,7 @@ import { Config } from "./config.ts";
 import { JavaServer, JavaServerEvents } from "./java_server.ts";
 import get from "https://deno.land/x/denodash@v0.1.3/src/object/get.ts";
 import { useEvents } from "./events.ts";
+import { defaultsDeep } from "./defaults_deep.ts";
 
 interface CommandEvent {
   player: string;
@@ -49,8 +50,7 @@ export function useCommand(javaServer: JavaServer) {
 
   useEvents(javaServer);
 
-  // @ts-ignore
-  javaServer.config = { command: DEFAULT_CONFIG, ...javaServer.config };
+  defaultsDeep(javaServer.config, { command: DEFAULT_CONFIG });
   javaServer.config.command.initialized = true;
 
   const regex = new RegExp(

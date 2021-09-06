@@ -43,7 +43,11 @@ import { useUtils } from "./utils.ts";
 // Example of using ScriptServer, which is both JavaServer & RconConnection
 () => {
   try {
-    const scriptServer = new ScriptServer();
+    const scriptServer = new ScriptServer({
+      command: {
+        prefix: "!",
+      },
+    });
 
     useEvents(scriptServer.javaServer);
     useCommand(scriptServer.javaServer);
@@ -55,7 +59,9 @@ import { useUtils } from "./utils.ts";
       });
     });
 
-    scriptServer.start();
+    console.log(scriptServer.config);
+
+    // scriptServer.start();
   } catch (error) {
     console.error(error);
   }

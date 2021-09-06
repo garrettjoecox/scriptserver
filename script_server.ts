@@ -2,6 +2,7 @@ import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
 import { JavaServer } from "./java_server.ts";
 import { RconConnection } from "./rcon_connection.ts";
 import get from "https://deno.land/x/denodash@v0.1.3/src/object/get.ts";
+import { defaultsDeep, DeepPartial } from "./defaults_deep.ts";
 import { Config } from "./config.ts";
 
 export interface ScriptServerConfig {
@@ -31,9 +32,12 @@ export class ScriptServer extends EventEmitter {
   public rconConnection: RconConnection;
   public config: Config;
 
-  constructor(config: Partial<Config> = {}) {
+  constructor(config: DeepPartial<Config> = {}) {
     super();
-    this.config = { scriptServer: DEFAULT_CONFIG, ...config } as Config;
+    console.log(config);
+    this.config = defaultsDeep(config, {
+      scriptServer: DEFAULT_CONFIG,
+    }) as Config;
     this.javaServer = new JavaServer(config);
     this.rconConnection = new RconConnection(config);
   }

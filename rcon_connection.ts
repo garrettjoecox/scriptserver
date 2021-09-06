@@ -2,6 +2,7 @@ import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
 import { Buffer } from "https://deno.land/std@0.93.0/node/buffer.ts";
 import { iter } from "https://deno.land/std@0.93.0/io/util.ts";
 import { Config } from "./config.ts";
+import { defaultsDeep, DeepPartial } from "./defaults_deep.ts";
 
 export interface RconConnectionConfig {
   host: string;
@@ -32,9 +33,11 @@ export class RconConnection extends EventEmitter {
   private connection?: Deno.Conn;
   private execId: number = RequestPacketId.Exec;
 
-  constructor(config: Partial<Config> = {}) {
+  constructor(config: DeepPartial<Config> = {}) {
     super();
-    this.config = { rconConnection: DEFAULT_CONFIG, ...config } as Config;
+    this.config = defaultsDeep(config, {
+      rconConnection: DEFAULT_CONFIG,
+    }) as Config;
 
     this.tick();
   }
