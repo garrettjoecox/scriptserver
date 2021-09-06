@@ -1,11 +1,19 @@
 import EventsEmitter from 'events';
 import Net, { Socket } from 'net';
+import defaultsDeep from 'lodash.defaultsdeep';
+import { Config, DeepPartial } from './Config';
 
 export interface RconConnectionConfig {
   host: string;
   port: number;
   password: string;
   buffer: number;
+}
+
+declare module './Config' {
+  export interface Config {
+    rconConnection: RconConnectionConfig;
+  }
 }
 
 export const DEFAULT_RCON_CONNECTION_CONFIG: RconConnectionConfig = {
@@ -27,29 +35,32 @@ export declare interface RconConnection {
 }
 
 export class RconConnection extends EventsEmitter {
-  private config: RconConnectionConfig = DEFAULT_RCON_CONNECTION_CONFIG;
+  public config: Config;
   private connection?: Socket;
   private authenticated: boolean = false;
   private queue: [string, (value: string) => void][] = [];
   private promises: { [execId: number]: (value: string) => void } = {};
   private execId: number = RequestPacketId.Exec;
 
-  constructor(config: Partial<RconConnectionConfig> = {}) {
+  constructor(config: DeepPartial<Config> = {}) {
     super();
 
-    Object.assign(this.config, config);
+    this.config = defaultsDeep(config, { rconConnection: DEFAULT_RCON_CONNECTION_CONFIG });
+
     this.tick();
   }
 
   public connect(retry = true) {
     this.connection = Net.connect(
       {
-        host: this.config.host,
-        port: this.config.port,
+        host: this.config.rconConnection.host,
+        port: this.config.rconConnection.port,
       },
       () => {
         this.listen();
-        this.connection?.write(encode(RequestPacketType.Auth, RequestPacketId.Auth, this.config.password));
+        this.connection?.write(
+          encode(RequestPacketType.Auth, RequestPacketId.Auth, this.config.rconConnection.password),
+        );
       },
     );
     this.connection.on('error', error => {
@@ -100,7 +111,7 @@ export class RconConnection extends EventsEmitter {
       this.connection.write(encode(RequestPacketType.Exec, execId, message));
     }
 
-    setTimeout(() => this.tick(), this.config.buffer);
+    setTimeout(() => this.tick(), this.config.rconConnection.buffer);
   }
 
   private getNextExecId(): number {

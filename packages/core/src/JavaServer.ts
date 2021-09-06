@@ -1,6 +1,9 @@
 import { spawn } from 'child_process';
 import EventsEmitter from 'events';
 import { ChildProcess } from 'node:child_process';
+import get from 'lodash.get';
+import defaultsDeep from 'lodash.defaultsdeep';
+import { Config, DeepPartial } from './Config';
 
 export interface JavaServerConfig {
   jar: string;
@@ -9,9 +12,17 @@ export interface JavaServerConfig {
   pipeStdout: boolean;
   pipeStdin: boolean;
   flavorSpecific: {
-    startedRegExp: RegExp;
-    stoppedRegExp: RegExp;
+    [flavor: string]: {
+      startedRegExp: RegExp;
+      stoppedRegExp: RegExp;
+    };
   };
+}
+
+declare module './Config' {
+  export interface Config {
+    javaServer: JavaServerConfig;
+  }
 }
 
 export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
@@ -21,12 +32,14 @@ export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
   pipeStdout: false,
   pipeStdin: true,
   flavorSpecific: {
-    startedRegExp: /^Thread RCON Listener started$/,
-    stoppedRegExp: /^Thread RCON Listener stopped$/,
+    default: {
+      startedRegExp: /^Thread RCON Listener started$/,
+      stoppedRegExp: /^Thread RCON Listener stopped$/,
+    },
   },
 };
 
-interface JavaServerEvents {
+export interface JavaServerEvents {
   console: (message: string) => void;
   started: () => void;
   stopped: () => void;
@@ -39,17 +52,37 @@ export declare interface JavaServer {
 }
 
 export class JavaServer extends EventsEmitter {
-  private config: JavaServerConfig = DEFAULT_JAVA_SERVER_CONFIG;
+  public config: Config;
   private process?: ChildProcess;
 
-  constructor(config: Partial<JavaServerConfig> = {}) {
+  constructor(config: DeepPartial<Config> = {}) {
     super();
 
-    Object.assign(this.config, config);
+    this.config = defaultsDeep(config, { javaServer: DEFAULT_JAVA_SERVER_CONFIG });
 
     this.on('console', (message: string) => {
-      if (message.match(this.config.flavorSpecific.startedRegExp)) this.emit('started');
-      if (message.match(this.config.flavorSpecific.stoppedRegExp)) this.emit('stopped');
+      if (
+        message.match(
+          get(
+            this.config,
+            `javaServer.flavorSpecific.${this.config.flavor}.startedRegExp`,
+            this.config.javaServer.flavorSpecific.default.startedRegExp,
+          ),
+        )
+      ) {
+        this.emit('started');
+      }
+      if (
+        message.match(
+          get(
+            this.config,
+            `javaServer.flavorSpecific.${this.config.flavor}.stoppedRegExp`,
+            this.config.javaServer.flavorSpecific.default.stoppedRegExp,
+          ),
+        )
+      ) {
+        this.emit('stopped');
+      }
     });
   }
 
@@ -58,17 +91,17 @@ export class JavaServer extends EventsEmitter {
       throw new Error('JavaServer already running');
     }
 
-    this.process = spawn('java', [...this.config.args, '-jar', this.config.jar, 'nogui'], {
-      cwd: this.config.path,
+    this.process = spawn('java', [...this.config.javaServer.args, '-jar', this.config.javaServer.jar, 'nogui'], {
+      cwd: this.config.javaServer.path,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
-    if (this.config.pipeStdout) {
+    if (this.config.javaServer.pipeStdout) {
       this.process.stdout?.pipe(process.stdout);
       this.process.stderr?.pipe(process.stderr);
     }
 
-    if (this.config.pipeStdin) {
+    if (this.config.javaServer.pipeStdin) {
       process.stdin.pipe(this.process.stdin!);
     }
 
@@ -100,6 +133,6 @@ export class JavaServer extends EventsEmitter {
       throw new Error('JavaServer not running');
     }
 
-    this.process.stdin?.write(message);
+    this.process.stdin?.write(message + '\n');
   }
 }
