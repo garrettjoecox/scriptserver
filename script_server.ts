@@ -1,53 +1,41 @@
 import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
-import { JavaServer, JavaServerConfig } from "./java_server.ts";
-import { RconConnection, RconConnectionConfig } from "./rcon_connection.ts";
+import { JavaServer } from "./java_server.ts";
+import { RconConnection } from "./rcon_connection.ts";
 import get from "https://deno.land/x/denodash@v0.1.3/src/object/get.ts";
+import { Config } from "./config.ts";
 
 export interface ScriptServerConfig {
-  flavor: string;
-  core: {
-    java: JavaServerConfig;
-    rcon: RconConnectionConfig;
-    flavorSpecific: {
-      default: {
-        rconRunning: RegExp;
-      };
+  flavorSpecific: {
+    default: {
+      rconRunningRegExp: RegExp;
     };
   };
 }
 
-export class ScriptServer extends EventEmitter {
-  private javaServer: JavaServer;
-  private rconConnection: RconConnection;
-  private config: ScriptServerConfig = {
-    flavor: "default",
-    core: {
-      java: {
-        jar: "server.jar",
-        args: ["-Xmx1024M", "-Xms1024M"],
-        path: "./server",
-        pipeStdout: true,
-        pipeStdin: true,
-      },
-      rcon: {
-        host: "localhost",
-        rconPort: 25575,
-        rconPassword: "0000",
-        rconBuffer: 100,
-      },
-      flavorSpecific: {
-        default: {
-          rconRunning: /^\[[\d:]{8}\] \[Server thread\/INFO\]: RCON running/i,
-        },
-      },
-    },
-  };
+declare module "./config.ts" {
+  export interface Config {
+    scriptServer: ScriptServerConfig;
+  }
+}
 
-  constructor(config: Partial<ScriptServerConfig> = {}) {
+const DEFAULT_CONFIG = {
+  flavorSpecific: {
+    default: {
+      rconRunningRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: RCON running/i,
+    },
+  },
+};
+
+export class ScriptServer extends EventEmitter {
+  public javaServer: JavaServer;
+  public rconConnection: RconConnection;
+  private config: Config;
+
+  constructor(config: Partial<Config> = {}) {
     super();
-    Object.assign(this.config, config);
-    this.javaServer = new JavaServer(config?.core?.java);
-    this.rconConnection = new RconConnection(config?.core?.rcon);
+    this.config = { scriptServer: DEFAULT_CONFIG, ...config } as Config;
+    this.javaServer = new JavaServer(config);
+    this.rconConnection = new RconConnection(config);
   }
 
   public start() {
@@ -58,8 +46,8 @@ export class ScriptServer extends EventEmitter {
         !message.match(
           get(
             this.config,
-            `this.config.core.flavorSpecific.${this.config.flavor}.rconRunning`,
-            this.config.core.flavorSpecific.default.rconRunning
+            `scriptServer.flavorSpecific.${this.config.flavor}.rconRunningRegExp`,
+            this.config.scriptServer.flavorSpecific.default.rconRunningRegExp
           )
         )
       ) {

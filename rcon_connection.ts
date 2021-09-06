@@ -1,6 +1,7 @@
 import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
 import { Buffer } from "https://deno.land/std@0.93.0/node/buffer.ts";
 import { iter } from "https://deno.land/std@0.93.0/io/util.ts";
+import { Config } from "./config.ts";
 
 export interface RconConnectionConfig {
   host: string;
@@ -9,13 +10,21 @@ export interface RconConnectionConfig {
   rconBuffer: number;
 }
 
+declare module "./config.ts" {
+  export interface Config {
+    rconConnection: RconConnectionConfig;
+  }
+}
+
+const DEFAULT_CONFIG = {
+  host: "localhost",
+  rconPort: 25575,
+  rconPassword: "0000",
+  rconBuffer: 100,
+};
+
 export class RconConnection extends EventEmitter {
-  private config: RconConnectionConfig = {
-    host: "localhost",
-    rconPort: 25575,
-    rconPassword: "0000",
-    rconBuffer: 100,
-  };
+  private config: Config;
 
   private authenticated = false;
   private queue: [string, (value: string) => void][] = [];
@@ -23,17 +32,17 @@ export class RconConnection extends EventEmitter {
   private connection?: Deno.Conn;
   private execId: number = RequestPacketId.Exec;
 
-  constructor(config: Partial<RconConnectionConfig> = {}) {
+  constructor(config: Partial<Config> = {}) {
     super();
-    Object.assign(this.config, config);
+    this.config = { rconConnection: DEFAULT_CONFIG, ...config } as Config;
 
     this.tick();
   }
 
   public async connect() {
     this.connection = await Deno.connect({
-      hostname: this.config.host,
-      port: this.config.rconPort,
+      hostname: this.config.rconConnection.host,
+      port: this.config.rconConnection.rconPort,
     });
 
     this.listen();
@@ -42,7 +51,7 @@ export class RconConnection extends EventEmitter {
       encode(
         RequestPacketType.Auth,
         RequestPacketId.Auth,
-        this.config.rconPassword
+        this.config.rconConnection.rconPassword
       )
     );
   }
@@ -95,7 +104,7 @@ export class RconConnection extends EventEmitter {
       this.connection.write(encode(RequestPacketType.Exec, execId, message));
     }
 
-    setTimeout(() => this.tick(), this.config.rconBuffer);
+    setTimeout(() => this.tick(), this.config.rconConnection.rconBuffer);
   }
 
   private getNextExecId(): number {
