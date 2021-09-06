@@ -16,7 +16,7 @@ declare module "./config.ts" {
   }
 }
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: RconConnectionConfig = {
   host: "localhost",
   rconPort: 25575,
   rconPassword: "0000",
@@ -24,7 +24,7 @@ const DEFAULT_CONFIG = {
 };
 
 export class RconConnection extends EventEmitter {
-  private config: Config;
+  public config: Config;
 
   private authenticated = false;
   private queue: [string, (value: string) => void][] = [];

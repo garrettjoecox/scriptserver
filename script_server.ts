@@ -18,7 +18,7 @@ declare module "./config.ts" {
   }
 }
 
-const DEFAULT_CONFIG = {
+const DEFAULT_CONFIG: ScriptServerConfig = {
   flavorSpecific: {
     default: {
       rconRunningRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: RCON running/i,
@@ -29,7 +29,7 @@ const DEFAULT_CONFIG = {
 export class ScriptServer extends EventEmitter {
   public javaServer: JavaServer;
   public rconConnection: RconConnection;
-  private config: Config;
+  public config: Config;
 
   constructor(config: Partial<Config> = {}) {
     super();

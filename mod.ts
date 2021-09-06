@@ -1,9 +1,24 @@
 import { ScriptServer } from "./script_server.ts";
+import { useEvents } from "./events.ts";
+import { useCommand } from "./command.ts";
 
-const scriptServer = new ScriptServer();
+(() => {
+  try {
+    const scriptServer = new ScriptServer();
 
-scriptServer.start();
+    useEvents(scriptServer.javaServer);
+    const command = useCommand(scriptServer.javaServer);
 
-scriptServer.on("start", async () => {
-  console.log(await scriptServer.send("help"));
-});
+    scriptServer.javaServer.on("command", (event) => {
+      console.log("command", event);
+    });
+
+    command("head", (event) => {
+      console.log("head", event);
+    });
+
+    scriptServer.start();
+  } catch (error) {
+    console.error(error);
+  }
+})();

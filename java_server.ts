@@ -16,7 +16,11 @@ declare module "./config.ts" {
   }
 }
 
-const DEFAULT_CONFIG = {
+export interface JavaServerEvents {
+  console: (consoleLine: string) => void;
+}
+
+const DEFAULT_CONFIG: JavaServerConfig = {
   jar: "server.jar",
   args: ["-Xmx1024M", "-Xms1024M"],
   path: "./server",
@@ -27,7 +31,18 @@ const DEFAULT_CONFIG = {
 const textDecoder = new TextDecoder();
 
 export class JavaServer extends EventEmitter {
-  private config: Config;
+  // @ts-expect-error
+  on<U extends keyof JavaServerEvents>(
+    event: U,
+    listener: JavaServerEvents[U]
+  ): this;
+
+  // @ts-expect-error
+  emit<U extends keyof JavaServerEvents>(
+    event: U,
+    ...args: Parameters<JavaServerEvents[U]>
+  ): boolean;
+  public config: Config;
   private process?: Deno.Process;
 
   constructor(config: Partial<Config> = {}) {
