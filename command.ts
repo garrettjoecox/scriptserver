@@ -18,7 +18,6 @@ export interface CommandConfig {
   commands: {
     [cmd: string]: CommandCallback[];
   };
-  commandFunc?: (cmd: string, callback: CommandCallback) => void;
 }
 
 declare module "./config.ts" {
@@ -31,6 +30,10 @@ declare module "./java_server.ts" {
   export interface JavaServerEvents {
     command: CommandCallback;
   }
+
+  export interface JavaServer {
+    command: (cmd: string, callback: CommandCallback) => void;
+  }
 }
 
 const DEFAULT_CONFIG: CommandConfig = {
@@ -41,7 +44,7 @@ const DEFAULT_CONFIG: CommandConfig = {
 
 export function useCommand(javaServer: JavaServer) {
   if (javaServer.config?.command?.initialized) {
-    return javaServer.config.command.commandFunc!;
+    return;
   }
 
   useEvents(javaServer);
@@ -78,15 +81,10 @@ export function useCommand(javaServer: JavaServer) {
     }
   });
 
-  javaServer.config.command.commandFunc = (
-    cmd: string,
-    callback: CommandCallback
-  ) => {
+  javaServer.command = (cmd: string, callback: CommandCallback) => {
     cmd = cmd.toLowerCase();
     javaServer.config.command.commands[cmd] =
       javaServer.config.command.commands[cmd] || [];
     javaServer.config.command.commands[cmd].push(callback);
   };
-
-  return javaServer.config.command.commandFunc;
 }

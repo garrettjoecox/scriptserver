@@ -1,6 +1,7 @@
 import { EventEmitter } from "https://deno.land/std@0.93.0/node/events.ts";
 import { iter } from "https://deno.land/std@0.93.0/io/util.ts";
 import { Config } from "./config.ts";
+import { Buffer } from "https://deno.land/std@0.93.0/node/buffer.ts";
 
 export interface JavaServerConfig {
   jar: string;
@@ -69,6 +70,12 @@ export class JavaServer extends EventEmitter {
 
     this.stdoutIter();
     this.stderrIter();
+  }
+
+  public send(message: string) {
+    if (!this.process || !this.process.stdin) return;
+
+    this.process.stdin.write(Buffer.from(message + "\n"));
   }
 
   private async stdoutIter() {
