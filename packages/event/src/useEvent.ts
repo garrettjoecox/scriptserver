@@ -8,7 +8,7 @@ const DEFAULT_EVENT_CONFIG: EventConfig = {
   flavorSpecific: {
     default: {
       parseChatEvent(consoleOutput) {
-        const parsed = consoleOutput.match(/^\[[\d:]{8}\] \[Server thread\/INFO\]: <(\w+)> (.*)/i);
+        const parsed = consoleOutput.match(/^\[.+?\]: <(\w+)> (.*)/i);
         if (parsed) {
           return {
             player: parsed[1] as string,
@@ -17,7 +17,7 @@ const DEFAULT_EVENT_CONFIG: EventConfig = {
         }
       },
       parseLoginEvent(string) {
-        const parsed = string.match(/^\[[\d:]{8}\] \[Server thread\/INFO\]: (\w+)\[\/([\d.:]+)\] logged in/);
+        const parsed = string.match(/^\[.+?\]: (\w+)\[\/([\d.:]+)\] logged in/);
         if (parsed) {
           return {
             player: parsed[1],
@@ -26,7 +26,7 @@ const DEFAULT_EVENT_CONFIG: EventConfig = {
         }
       },
       parseLogoutEvent(string) {
-        const parsed = string.match(/^\[[\d:]{8}\] \[Server thread\/INFO\]: (\w+) lost connection: (.+)/);
+        const parsed = string.match(/^\[.+?\]: (\w+) lost connection: (.+)/);
         if (parsed) {
           return {
             player: parsed[1],
@@ -35,9 +35,7 @@ const DEFAULT_EVENT_CONFIG: EventConfig = {
         }
       },
       parseAchievementEvent(string) {
-        const parsed = string.match(
-          /^\[[\d:]{8}\] \[Server thread\/INFO\]: (\w+) has made the advancement \[([\w\s]+)\]/,
-        );
+        const parsed = string.match(/^\[.+?\]: (\w+) has made the advancement \[([\w\s]+)\]/);
         if (parsed) {
           return {
             player: parsed[1],

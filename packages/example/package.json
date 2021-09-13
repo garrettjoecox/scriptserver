@@ -5,7 +5,9 @@
   "description": "A minecraft server wrapper built in Node",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prestart": "npm run build"
   },
   "repository": {
     "type": "git",

@@ -33,8 +33,8 @@ export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
   pipeStdin: true,
   flavorSpecific: {
     default: {
-      startedRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: Done/,
-      stoppedRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: ThreadedAnvilChunkStorage: All dimensions are saved$/,
+      startedRegExp: /^\[.+?\]: Done/,
+      stoppedRegExp: /^\[.+?\]: ThreadedAnvilChunkStorage: All dimensions are saved$/,
     },
   },
 };
