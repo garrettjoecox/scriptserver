@@ -1,7 +1,12 @@
 {
   "name": "@scriptserver/util",
   "version": "2.0.0",
-  "description": "A minecraft server wrapper built in Node",
+  "description": "Helper methods usually involvivng commands within Minecraft like /tellraw",
+  "keywords": [
+    "minecraft",
+    "server",
+    "scriptserver"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
@@ -10,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/garrettjoecox/scriptserver.git"
   },
-  "author": "Garrett Cox <garrettjcox@gmail.com> (http://garrettcox.io)",
+  "author": "Garrett Cox <garrettjcox@gmail.com> (https://garrettcox.dev)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/garrettjoecox/scriptserver/issues"
@@ -18,10 +23,10 @@
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
     "lodash.defaultsdeep": "^4.6.1",
-    "lodash.get": "^4.4.2"
+    "lodash.get": "^4.4.2",
+    "@scriptserver/core": "^2.0.0"
   },
   "devDependencies": {
-    "@scriptserver/core": "^2.0.0",
     "@types/lodash.defaultsdeep": "^4.6.6",
     "@types/lodash.get": "^4.4.6",
     "@types/node": "^14.14.41",

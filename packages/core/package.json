@@ -2,6 +2,11 @@
   "name": "@scriptserver/core",
   "version": "2.0.0",
   "description": "A minecraft server wrapper built in Node",
+  "keywords": [
+    "minecraft",
+    "server",
+    "scriptserver"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc"
@@ -10,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/garrettjoecox/scriptserver.git"
   },
-  "author": "Garrett Cox <garrettjcox@gmail.com> (http://garrettcox.io)",
+  "author": "Garrett Cox <garrettjcox@gmail.com> (https://garrettcox.dev)",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/garrettjoecox/scriptserver/issues"

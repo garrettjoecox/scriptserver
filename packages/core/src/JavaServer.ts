@@ -29,20 +29,20 @@ export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
   jar: 'server.jar',
   args: ['-Xmx1024M', '-Xms1024M'],
   path: './server',
-  pipeStdout: false,
+  pipeStdout: true,
   pipeStdin: true,
   flavorSpecific: {
     default: {
-      startedRegExp: /^Thread RCON Listener started$/,
-      stoppedRegExp: /^Thread RCON Listener stopped$/,
+      startedRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: Done/,
+      stoppedRegExp: /^\[[\d:]{8}\] \[Server thread\/INFO\]: ThreadedAnvilChunkStorage: All dimensions are saved$/,
     },
   },
 };
 
 export interface JavaServerEvents {
   console: (message: string) => void;
-  started: () => void;
-  stopped: () => void;
+  start: () => void;
+  stop: () => void;
 }
 
 export declare interface JavaServer {
@@ -70,7 +70,7 @@ export class JavaServer extends EventsEmitter {
           ),
         )
       ) {
-        this.emit('started');
+        this.emit('start');
       }
       if (
         message.match(
@@ -81,7 +81,7 @@ export class JavaServer extends EventsEmitter {
           ),
         )
       ) {
-        this.emit('stopped');
+        this.emit('stop');
       }
     });
   }
@@ -109,10 +109,7 @@ export class JavaServer extends EventsEmitter {
       chunk
         .toString()
         .split('\n')
-        .forEach(message => {
-          const trimmedMessage = message.match(/^\[\S+] \[[^\]]+]: (.+)/);
-          if (trimmedMessage && trimmedMessage[1]) this.emit('console', trimmedMessage[1]);
-        });
+        .forEach(message => this.emit('console', message));
     });
 
     this.process.on('exit', () => {
