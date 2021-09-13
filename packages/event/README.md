@@ -29,8 +29,6 @@ This module does not export JavaServer, but extends it
 
 ### `javaServer.on('achievement', (event: { player: string; achievement: string; }) => void)`
 
-This is exposed for advanced uses, not necssary to use this if using the `javaServer.command` method.
-
 ## Interface: `Config`
 
 These configuration options are here to override as needed for flavors, if you are having trouble getting the events to emit in your given flavor of server, try overriding these.
