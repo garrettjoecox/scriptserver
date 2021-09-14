@@ -1,6 +1,6 @@
 # scriptserver
 
-[![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver/tree/next)
+[![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver/tree/master)
 
 ![Total Downloads](https://img.shields.io/npm/dt/scriptserver.svg)
 
@@ -75,12 +75,12 @@ node server.js
 
 **Official**
 
-- [Core](https://github.com/garrettjoecox/scriptserver/tree/next/packages/core) - ScriptServer, JavaServer & RconConnection APIs
-- [Event](https://github.com/garrettjoecox/scriptserver/tree/next/packages/event) - Parses events like login/logout/chat/achievement
-- [Util](https://github.com/garrettjoecox/scriptserver/tree/next/packages/util) - Helper methods usually involvivng commands within Minecraft like /tellraw
-- [Command](https://github.com/garrettjoecox/scriptserver/tree/next/packages/command) - Module for registering custom commands that can be activated with chat messages (e.g. `~home`)
-- [Json](https://github.com/garrettjoecox/scriptserver/tree/next/packages/json) - Simple module for storing and reading data in JSON files
-- [Essentials](https://github.com/garrettjoecox/scriptserver/tree/next/packages/essentials) - Combines all of the plugins above to provide things like warps, homes, kits, MOTD, etc.
+- [Core](https://github.com/garrettjoecox/scriptserver/tree/master/packages/core) - ScriptServer, JavaServer & RconConnection APIs
+- [Event](https://github.com/garrettjoecox/scriptserver/tree/master/packages/event) - Parses events like login/logout/chat/achievement
+- [Util](https://github.com/garrettjoecox/scriptserver/tree/master/packages/util) - Helper methods usually involvivng commands within Minecraft like /tellraw
+- [Command](https://github.com/garrettjoecox/scriptserver/tree/master/packages/command) - Module for registering custom commands that can be activated with chat messages (e.g. `~home`)
+- [Json](https://github.com/garrettjoecox/scriptserver/tree/master/packages/json) - Simple module for storing and reading data in JSON files
+- [Essentials](https://github.com/garrettjoecox/scriptserver/tree/master/packages/essentials) - Combines all of the plugins above to provide things like warps, homes, kits, MOTD, etc.
 
 **Community**
 
