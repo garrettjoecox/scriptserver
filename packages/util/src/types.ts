@@ -13,11 +13,15 @@ export interface UtilConfig {
   initialized: boolean;
   flavorSpecific: {
     [flavor: string]: {
+      isOp: (player: string) => Promise<boolean>;
+      isOnline: (player: string) => Promise<boolean>;
       tellRaw: (message: string, target?: string, options?: Record<string, string>) => void;
       getEntityData: (target?: string, path?: string, scale?: number) => Promise<string>;
       getDimension: (player: string) => Promise<Dimension>;
       getLocation: (player: string) => Promise<Location>;
+      getOnline: () => Promise<{ online: number; max: number; players: string[] }>;
       teleport: (target: string, location: Location) => Promise<void>;
+      wait: (ms: number) => Promise<void>;
     };
   };
 }

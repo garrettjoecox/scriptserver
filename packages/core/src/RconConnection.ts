@@ -19,7 +19,7 @@ declare module './Config' {
 export const DEFAULT_RCON_CONNECTION_CONFIG: RconConnectionConfig = {
   host: 'localhost',
   port: 25575,
-  password: '0000',
+  password: 'password',
   buffer: 100,
 };
 

@@ -23,7 +23,8 @@
     "@scriptserver/core": "^2.0.0",
     "@scriptserver/event": "^2.0.0",
     "@scriptserver/command": "^2.0.0",
-    "@scriptserver/util": "^2.0.0"
+    "@scriptserver/util": "^2.0.0",
+    "@scriptserver/json": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^14.14.41",

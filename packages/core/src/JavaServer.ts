@@ -28,7 +28,7 @@ declare module './Config' {
 export const DEFAULT_JAVA_SERVER_CONFIG: JavaServerConfig = {
   jar: 'server.jar',
   args: ['-Xmx1024M', '-Xms1024M'],
-  path: './server',
+  path: '.',
   pipeStdout: true,
   pipeStdin: true,
   flavorSpecific: {
