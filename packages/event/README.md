@@ -1,4 +1,4 @@
-# scriptserver
+# @scriptserver/event
 
 [![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver/tree/next)
 

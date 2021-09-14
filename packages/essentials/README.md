@@ -1,4 +1,4 @@
-# scriptserver
+# @scriptserver/essentials
 
 [![](http://i.imgur.com/zhptNme.png)](https://github.com/garrettjoecox/scriptserver/tree/next)
 
