@@ -1,7 +1,7 @@
 {
   "name": "scriptserver",
-  "version": "1.2.0",
-  "description": "A minecraft server wrapper built in Node",
+  "version": "1.2.1",
+  "description": "Deprecated - Moved to @scriptserver/core",
   "main": "index.js",
   "repository": {
     "type": "git",
