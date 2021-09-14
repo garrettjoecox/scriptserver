@@ -10,10 +10,20 @@
 import { ScriptServer, JavaServer } from '@scriptserver/core';
 import { useCommand } from '@scriptserver/command';
 
-const javaServer = new JavaServer();
+const javaServer = new JavaServer({
+  command: {
+    prefix: '!',
+  },
+});
 useCommand(javaServer);
+
 // Or
-const scriptServer = new ScriptServer();
+
+const scriptServer = new ScriptServer({
+  command: {
+    prefix: '!',
+  },
+});
 useCommand(scriptServer.javaServer);
 ```
 

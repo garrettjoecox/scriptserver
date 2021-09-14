@@ -7,7 +7,10 @@
     "server",
     "scriptserver"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garrettjoecox/scriptserver.git"
@@ -17,5 +20,20 @@
   "bugs": {
     "url": "https://github.com/garrettjoecox/scriptserver/issues"
   },
-  "homepage": "https://github.com/garrettjoecox/scriptserver#readme"
+  "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
+  "dependencies": {
+    "lodash.defaultsdeep": "^4.6.1",
+    "lodash.template": "^4.5.0",
+    "@scriptserver/core": "^2.0.0",
+    "@scriptserver/event": "^2.0.0",
+    "@scriptserver/command": "^2.0.0",
+    "@scriptserver/util": "^2.0.0",
+    "@scriptserver/json": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash.defaultsdeep": "^4.6.6",
+    "@types/lodash.template": "^4.5.0",
+    "@types/node": "^14.14.41",
+    "typescript": "^4.2.4"
+  }
 }

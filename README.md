@@ -43,7 +43,7 @@ const server = new ScriptServer({
   },
 });
 
-useEssentials(server.javaServer, server.rconConnection);
+useEssentials(server);
 
 server.start();
 ```
@@ -60,6 +60,7 @@ node server.js
 enable-rcon=true
 rcon.port=25575
 rcon.password=password
+broadcast-rcon-to-ops=false
 ```
 
 - Start your server again with

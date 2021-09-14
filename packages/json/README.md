@@ -13,10 +13,20 @@ import { useJson } from '@scriptserver/json';
 const scriptServer = new ScriptServer();
 useJson(scriptServer.rconConnection);
 // Or
-const rconConnection = new RconConnection();
+const rconConnection = new RconConnection({
+  json: {
+    path: __dirname + '/json',
+  },
+});
 useJson(rconConnection);
+
 // Or
-const javaServer = new JavaServer();
+
+const javaServer = new JavaServer({
+  json: {
+    path: __dirname + '/json',
+  },
+});
 useJson(javaServer);
 ```
 

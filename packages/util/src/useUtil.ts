@@ -7,6 +7,10 @@ import { promisify } from 'util';
 import { join } from 'path';
 
 export function useUtil(rconConnection: RconConnection) {
+  if (rconConnection.config?.util?.initialized) {
+    return;
+  }
+
   const DEFAULT_UTIL_CONFIG: UtilConfig = {
     initialized: false,
     flavorSpecific: {
@@ -89,9 +93,9 @@ export function useUtil(rconConnection: RconConnection) {
           if (!location) throw new Error('util.getLocation: Could not parse location, player may be offline');
 
           return {
-            x: parseFloat(location[1]),
-            y: parseFloat(location[2]),
-            z: parseFloat(location[3]),
+            x: parseInt(location[1], 10),
+            y: parseInt(location[2], 10),
+            z: parseInt(location[3], 10),
             dimension: await this.getDimension(player),
           };
         },

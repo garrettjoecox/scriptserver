@@ -2,7 +2,7 @@ import { Config, RconConnection } from '@scriptserver/core';
 
 export type Dimension = 'minecraft:overworld' | 'minecraft:the_nether' | 'minecraft:the_end';
 
-interface Location {
+export interface Location {
   x: number;
   y: number;
   z: number;
@@ -15,7 +15,7 @@ export interface UtilConfig {
     [flavor: string]: {
       isOp: (player: string) => Promise<boolean>;
       isOnline: (player: string) => Promise<boolean>;
-      tellRaw: (message: string, target?: string, options?: Record<string, string>) => void;
+      tellRaw: (message: string, target?: string, options?: Record<string, string>) => Promise<string>;
       getEntityData: (target?: string, path?: string, scale?: number) => Promise<string>;
       getDimension: (player: string) => Promise<Dimension>;
       getLocation: (player: string) => Promise<Location>;
