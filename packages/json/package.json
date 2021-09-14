@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/json",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Simple module for storing and reading data in JSON files",
   "keywords": [
     "minecraft",
@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
-    "lodash.defaultsdeep": "^4.6.1",
-    "@scriptserver/core": "^2.0.0"
+    "@scriptserver/core": "^2.0.1",
+    "lodash.defaultsdeep": "^4.6.1"
   },
   "devDependencies": {
     "@types/lodash.defaultsdeep": "^4.6.6",

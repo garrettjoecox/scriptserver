@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/util",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Helper methods usually involvivng commands within Minecraft like /tellraw",
   "keywords": [
     "minecraft",
@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
+    "@scriptserver/core": "^2.0.1",
     "lodash.defaultsdeep": "^4.6.1",
-    "lodash.get": "^4.4.2",
-    "@scriptserver/core": "^2.0.0"
+    "lodash.get": "^4.4.2"
   },
   "devDependencies": {
     "@types/lodash.defaultsdeep": "^4.6.6",
