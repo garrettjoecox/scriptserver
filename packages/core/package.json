@@ -1,14 +1,16 @@
 {
-  "name": "scriptserver",
-  "private": true,
-  "version": "2.0.0",
+  "name": "@scriptserver/core",
+  "version": "2.0.2",
   "description": "A minecraft server wrapper built in Node",
   "keywords": [
     "minecraft",
     "server",
     "scriptserver"
   ],
-  "main": "index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/garrettjoecox/scriptserver.git"
@@ -19,13 +21,14 @@
     "url": "https://github.com/garrettjoecox/scriptserver/issues"
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
+  "dependencies": {
+    "lodash.defaultsdeep": "^4.6.1",
+    "lodash.get": "^4.4.2"
+  },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.0",
-    "eslint": "^7.24.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-config-prettier": "^8.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "lerna": "^4.0.0",
-    "prettier": "^2.2.1"
+    "@types/lodash.defaultsdeep": "^4.6.1",
+    "@types/lodash.get": "^4.4.6",
+    "@types/node": "^14.14.41",
+    "typescript": "^4.2.4"
   }
 }

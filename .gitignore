@@ -1,1 +1,4 @@
 node_modules
+server
+dist
+.DS_Store
