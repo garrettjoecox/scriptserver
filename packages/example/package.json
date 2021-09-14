@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/example",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "private": true,
   "description": "A minecraft server wrapper built in Node",
   "main": "dist/index.js",
@@ -20,12 +20,12 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
-    "@scriptserver/command": "^2.0.1",
-    "@scriptserver/core": "^2.0.1",
-    "@scriptserver/essentials": "^2.0.1",
-    "@scriptserver/event": "^2.0.1",
-    "@scriptserver/json": "^2.0.1",
-    "@scriptserver/util": "^2.0.1"
+    "@scriptserver/command": "^2.0.2",
+    "@scriptserver/core": "^2.0.2",
+    "@scriptserver/essentials": "^2.0.2",
+    "@scriptserver/event": "^2.0.2",
+    "@scriptserver/json": "^2.0.2",
+    "@scriptserver/util": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.41",
