@@ -20,7 +20,7 @@ export const DEFAULT_RCON_CONNECTION_CONFIG: RconConnectionConfig = {
   host: 'localhost',
   port: 25575,
   password: 'password',
-  buffer: 100,
+  buffer: 200,
 };
 
 interface RconConnectionEvents {
