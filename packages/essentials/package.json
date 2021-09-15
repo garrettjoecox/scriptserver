@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/essentials",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Provides things like warps, homes, kits, MOTD, etc.",
   "keywords": [
     "minecraft",
@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
-    "@scriptserver/command": "^2.0.2",
-    "@scriptserver/core": "^2.0.2",
-    "@scriptserver/event": "^2.0.2",
-    "@scriptserver/json": "^2.0.2",
-    "@scriptserver/util": "^2.0.2",
+    "@scriptserver/command": "^2.0.3",
+    "@scriptserver/core": "^2.0.3",
+    "@scriptserver/event": "^2.0.3",
+    "@scriptserver/json": "^2.0.3",
+    "@scriptserver/util": "^2.0.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.template": "^4.5.0"
   },

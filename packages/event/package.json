@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/event",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Parses events like login/logout/chat/achievement",
   "main": "dist/index.js",
   "keywords": [
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
-    "@scriptserver/core": "^2.0.2",
+    "@scriptserver/core": "^2.0.3",
     "lodash.defaultsdeep": "^4.6.1",
     "lodash.get": "^4.4.2"
   },
