@@ -1,6 +1,6 @@
 {
   "name": "@scriptserver/command",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "Module for registering custom commands that can be activated with chat messages",
   "keywords": [
     "minecraft",
@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
-    "@scriptserver/core": "^2.0.3",
-    "@scriptserver/event": "^2.0.3",
+    "@scriptserver/core": "^2.0.4",
+    "@scriptserver/event": "^2.0.4",
     "lodash.defaultsdeep": "^4.6.1"
   },
   "devDependencies": {
