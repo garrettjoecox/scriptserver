@@ -7,7 +7,7 @@
 ## What's ScriptServer?
 
 A configurable Minecraft server wrapper written in Node.js.
-Using a combination of RCON and the output of the server console it allows you to do some pretty cool things, like making simple server-side plugins on a vanilla minecraft server jar.
+Using a combination of RCON and the output of the server console it allows you to do some pretty cool things, like making simple server-side plugins on a vanilla Minecraft server JAR.
 
 ## What version of Minecraft does it work with?
 
@@ -18,8 +18,8 @@ Technically, it can work with any version of Minecraft that logs to STDOUT and h
 **Prerequisites**
 
 - NodeJS
-- Somewhat of a familiarity with Javascript/Typescript
-- Minecraft server jar ([Vanilla](https://www.minecraft.net/en-us/download/server) / Spigot / Etc)
+- Somewhat of a familiarity with JavaScript/TypeScript
+- Minecraft server JAR ([Vanilla](https://www.minecraft.net/en-us/download/server) / Spigot / Etc)
 
 **Setup**
 
