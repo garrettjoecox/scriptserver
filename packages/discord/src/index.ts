@@ -10,7 +10,6 @@ export interface DiscordConfig {
 
   token: string;
   channelId: string;
-  botUserId: string;
 
   chatToDiscord: boolean;
   chatFromDiscord: boolean;
@@ -28,7 +27,6 @@ export const DEFAULT_DISCORD_CONFIG: DiscordConfig = {
 
   token: '',
   channelId: '',
-  botUserId: '',
 
   chatFromDiscord: true,
   chatToDiscord: true,
@@ -100,7 +98,7 @@ export function useDiscord(scriptServer: ScriptServer) {
 
   scriptServer.javaServer.on('chat', async event => {
     try {
-      if (config.connected) {
+      if (config.connected && event.message.charAt(0) !== '~') {
         (client.channels.cache.get(config.channelId) as TextChannel).send(`<${event.player}> ${event.message}`);
       }
     } catch (e) {
