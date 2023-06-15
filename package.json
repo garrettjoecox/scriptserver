@@ -27,5 +27,14 @@
     "eslint-plugin-import": "^2.22.1",
     "lerna": "^4.0.0",
     "prettier": "^2.2.1"
-  }
+  },
+  "workspaces": [
+    "packages/core",
+    "packages/event",
+    "packages/essentials",
+    "packages/util",
+    "packages/json",
+    "packages/command",
+    "packages/example"
+  ]
 }
