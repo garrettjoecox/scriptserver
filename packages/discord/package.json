@@ -1,11 +1,12 @@
 {
-  "name": "@scriptserver/util",
-  "version": "2.0.5",
-  "description": "Helper methods usually involvivng commands within Minecraft like /tellraw",
+  "name": "@scriptserver/discord",
+  "version": "0.0.1",
+  "description": "Discord bot integration",
   "keywords": [
     "minecraft",
     "server",
-    "scriptserver"
+    "scriptserver",
+    "discord"
   ],
   "main": "dist/index.js",
   "scripts": {
@@ -23,12 +24,13 @@
   "homepage": "https://github.com/garrettjoecox/scriptserver#readme",
   "dependencies": {
     "@scriptserver/core": "^2.0.4",
-    "lodash.defaultsdeep": "^4.6.1",
-    "lodash.get": "^4.4.2"
+    "@scriptserver/event": "^2.0.4",
+    "@scriptserver/util": "^2.0.4",
+    "discord.js": "^14.11.0",
+    "lodash.defaultsdeep": "^4.6.1"
   },
   "devDependencies": {
     "@types/lodash.defaultsdeep": "^4.6.6",
-    "@types/lodash.get": "^4.4.6",
     "@types/node": "^14.14.41",
     "typescript": "^4.2.4"
   },

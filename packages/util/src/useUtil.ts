@@ -37,14 +37,14 @@ export function useUtil(rconConnection: RconConnection) {
 
         async getOnline() {
           const result = await rconConnection.send('list');
-          const online = result.match(/^There are (\d+) of a max of (\d+) players online: (.+)$/);
+          const online = result.match(/^There are (\d+) of a max of (\d+) players online:\s?(.+)?$/);
 
           if (!online) throw new Error('util.getOnline: Could not parse list command result');
 
           return {
             online: parseInt(online[1], 10),
             max: parseInt(online[2], 10),
-            players: online[3].split(','),
+            players: online[3]?.split(','),
           };
         },
 

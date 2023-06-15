@@ -2,5 +2,10 @@
   "extends": ["airbnb-typescript", "prettier"],
   "parserOptions": {
     "project": "./tsconfig.json"
+  },
+  "rules": {
+    "no-param-reassign": "error",
+    "no-template-curly-in-string": "off",
+    "import/prefer-default-export": "off"
   }
 }

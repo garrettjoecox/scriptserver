@@ -8,11 +8,11 @@ const DEFAULT_EVENT_CONFIG: EventConfig = {
   flavorSpecific: {
     default: {
       parseChatEvent(consoleOutput) {
-        const parsed = consoleOutput.match(/^\[.+?\]: <(\w+)> (.*)/i);
+        const parsed = consoleOutput.match(/^\[.+?\]:(\s\[Not Secure\])? <(\w+)> (.*)/i);
         if (parsed) {
           return {
-            player: parsed[1] as string,
-            message: parsed[2] as string,
+            player: parsed[2] as string,
+            message: parsed[3] as string,
           };
         }
       },
