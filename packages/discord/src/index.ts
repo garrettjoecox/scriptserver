@@ -73,7 +73,7 @@ export function useDiscord(scriptServer: ScriptServer) {
   scriptServer.javaServer.on('login', async event => {
     try {
       if (config.connected) {
-        (client.channels.cache.get(config.channelId) as TextChannel).send(`${event.player} joined the game`);
+        await (client.channels.cache.get(config.channelId) as TextChannel).send(`${event.player} joined the game`);
 
         const { online } = await scriptServer.rconConnection.util.getOnline();
         client.user?.setActivity(`: ${online} Online`);
@@ -86,7 +86,7 @@ export function useDiscord(scriptServer: ScriptServer) {
   scriptServer.javaServer.on('logout', async event => {
     try {
       if (config.connected) {
-        (client.channels.cache.get(config.channelId) as TextChannel).send(`${event.player} left the game`);
+        await (client.channels.cache.get(config.channelId) as TextChannel).send(`${event.player} left the game`);
 
         const { online } = await scriptServer.rconConnection.util.getOnline();
         client.user?.setActivity(`: ${online} Online`);
@@ -99,7 +99,7 @@ export function useDiscord(scriptServer: ScriptServer) {
   scriptServer.javaServer.on('chat', async event => {
     try {
       if (config.connected && event.message.charAt(0) !== '~') {
-        (client.channels.cache.get(config.channelId) as TextChannel).send(`<${event.player}> ${event.message}`);
+        await (client.channels.cache.get(config.channelId) as TextChannel).send(`<${event.player}> ${event.message}`);
       }
     } catch (e) {
       console.error(e);
